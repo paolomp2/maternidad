@@ -1,0 +1,67 @@
+<?php $__env->startSection('content'); ?>
+
+<?php if(count($errors) > 0): ?>
+	<div class="alert alert-danger alert-dissmisable">
+		<ul>
+			<?php foreach($errors->all() as $error): ?>
+				<li><?php echo e($error); ?></li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+<?php endif; ?>
+
+
+<div id="header">
+	<div class="row row-header">
+		<img id="logo1" src="<?php echo e(asset('img')); ?>/logo_uib.png">
+		<p id="title1" >PROGRAMA DE GESTIÓN EN TECNOLOGÍAS DE SALUD E INGENIERÍA CLÍNICA</p>
+	</div>
+</div>
+<div class="top-content">        	
+   <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3 form-box">
+            	<div class="form-top" style="border-radius:8px 8px 8px 8px;">
+            		<div class="form-top-left">
+            			<h3><strong>BIENVENIDO AL SISTEMA GTS</strong></h3>
+                		<p>Ingrese a su cuenta</p>
+            		</div>
+            		<div class="form-top-right">
+            			<i class="fa fa-lock"></i>
+            		</div>
+                </div>
+                <?php echo Form::open(array('url'=>'/auth/login', 'role'=>'form')); ?>
+
+                <div class="form-bottom">
+                    <form role="form" action="" method="post" class="login-form">			                    	
+                    	<div class="form-group">
+                    		<label class="sr-only" for="form-username">Usuario</label>
+                        	<div class="input-group">
+		                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+		                        <?php echo Form::text('email',Input::old('usuario'),array('class'=>'form-control','placeholder'=>'Usuario')); ?>
+
+	                    	</div>
+                        </div>
+                        <div class="form-group">
+                        	<label class="sr-only" for="form-password">Contraseña</label>
+                        	<div class="input-group">
+		                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+		                       	<?php echo Form::password('password',array('class'=>'form-control','placeholder'=>'Contraseña')); ?>
+
+	                    	</div>
+                        </div>
+                        <?php echo Form::submit('Ingresar',array('id'=>'submit-login', 'class'=>'btn btn-lg btn-primary btn-block')); ?>
+
+                        
+                    </form>
+                </div>
+                <?php echo Form::close(); ?>
+
+            </div>
+        </div>
+    </div>
+</div>
+				
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('templates/loginTemplate', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,64 @@
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, follow">
+<title><?php echo isset($data['page_name']) ? $data['page_name'] : "GTS"; ?></title>
+
+
+<link rel="shortcut icon" href="<?php echo e(asset('img')); ?>/logo_gts.png">
+<!-- Bootstrap Core CSS -->
+<link href="<?php echo e(asset('bower_components/bootstrap/dist/css/bootstrap.min.css')); ?>" rel="stylesheet">
+<!-- Datepicker CSS-->
+<link rel="stylesheet" href="<?php echo e(asset('css/bootstrap-datetimepicker.min.css')); ?>">
+<!-- MetisMenu CSS -->
+<link href="<?php echo e(asset('bower_components/metisMenu/dist/metisMenu.min.css')); ?>" rel="stylesheet">
+<!-- Timeline CSS -->
+<link href="<?php echo e(asset('dist/css/timeline.css')); ?>" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="<?php echo e(asset('dist/css/sb-admin-2.css')); ?>" rel="stylesheet">
+<!-- Morris Charts CSS -->
+<link href="<?php echo e(asset('bower_components/morrisjs/morris.css')); ?>" rel="stylesheet">
+<!-- Custom Fonts -->
+<link href="<?php echo e(asset('bower_components/font-awesome/css/font-awesome.min.css')); ?>" rel="stylesheet">
+<link href="<?php echo e(asset('css/fileinput.min.css')); ?>" rel="stylesheet">
+<link href="<?php echo e(asset('css/tab-menus.css')); ?>" rel="stylesheet">
+<!--Bootstrap-Dialog CSS-->
+<link rel="stylesheet" href="<?php echo e(asset('css/bootstrap-dialog.min.css')); ?>">
+<!--CHARTS-CSS-->
+<link rel="stylesheet" href="<?php echo e(asset('charts/chartist.min.css')); ?>">
+
+<script type="text/javascript">        
+</script>
+<!-- jQuery -->
+<script src="<?php echo e(asset('bower_components/jquery/dist/jquery.min.js')); ?>"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="<?php echo e(asset('bower_components/bootstrap/dist/js/bootstrap.min.js')); ?>"></script>
+<!-- Moment JavaScript -->
+<script type="text/javascript" src="<?php echo e(asset('js/moment.min.js')); ?>"></script>
+<!-- Bootstrap Datepicker JavaScript -->
+<script type="text/javascript" src="<?php echo e(asset('js/bootstrap-datetimepicker.min.js')); ?>"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script src="<?php echo e(asset('bower_components/metisMenu/dist/metisMenu.min.js')); ?>"></script>
+<!-- Morris Charts JavaScript -->
+<script src="<?php echo e(asset('bower_components/raphael/raphael-min.js')); ?>"></script>
+<script src="<?php echo e(asset('bower_components/morrisjs/morris.min.js')); ?>"></script>
+<!-- Custom Theme JavaScript -->
+<script src="<?php echo e(asset('dist/js/sb-admin-2.js')); ?>"></script>
+<script src="<?php echo e(asset('js/fileinput.min.js')); ?>"></script>
+<script src="<?php echo e(asset('js/fileinput_locale_es.min.js')); ?>"></script>
+<script src="<?php echo e(asset('js/language_file_upload_plugin.min.js')); ?>"></script>
+<!--Bootstrap-Dialog Javascritp-->
+<script src="<?php echo e(asset('js/bootstrap-dialog.min.js')); ?>"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+<!--Bootstrap-Dialog Javascritp-->
+<script src="<?php echo e(asset('js/date_picker.js')); ?>"></script>
+<!--CHARTS Javascritp-->
+<script src="<?php echo e(asset('js/Chart.js')); ?>"></script>
+
+<?php if($data['chart']=='true'): ?>
+
+	<?php if($data['chart_model']=='execute.time.1'): ?>
+	<script src="<?php echo e(asset('js/execute/time/1.js')); ?>"></script>
+	<?php endif; ?>
+
+
+<?php endif; ?>

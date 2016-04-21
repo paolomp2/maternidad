@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <?php echo $__env->make('layouts.header', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>    
+</head>
+
+<body>
+    <input type="hidden" name="_token" id="csrf-token" value="<?php echo e(Session::token()); ?>" />
+    <div id="wrapper">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <?php echo $__env->make('layouts.menu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+            <?php if($data['siderbar_type']=='execute'): ?>
+                <?php echo $__env->make('layouts.siderbar.execute', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php elseif($data['siderbar_type']=='assets'): ?>
+                <?php echo $__env->make('layouts.siderbar.assets', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php endif; ?>
+        </nav>
+        <div id="page-wrapper">
+            <?php echo $__env->yieldContent('content'); ?>
+        </div>
+    </div>
+</body>
+</html>

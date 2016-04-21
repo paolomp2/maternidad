@@ -1,0 +1,113 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	
+	<!-- DATOS PARA EL CHART -->
+	<?php if($data['chart']=='true'): ?>
+	<?php $data_chart = $data['data_chart'] ?>
+	<?php echo Form::hidden('labels', $data_chart['labels'], ['id'=>'labels']); ?>
+
+	<?php echo Form::hidden('num_months', $data_chart['num_months'], ['id'=>'num_months']); ?>	
+	<?php echo Form::hidden('year_beg', $data_chart['year_beg'], ['id'=>'year_beg']); ?>
+
+	<?php echo Form::hidden('year_end', $data_chart['year_end'], ['id'=>'year_end']); ?>
+
+	<?php echo Form::hidden('month_beg', $data_chart['month_beg'], ['id'=>'month_beg']); ?>
+
+	<?php echo Form::hidden('month_end', $data_chart['month_end'], ['id'=>'month_end']); ?>
+
+
+	<?php for($i=0;$i<$data_chart['num_months'];$i++): ?>
+
+	<?php endfor; ?>
+	<?php endif; ?>
+	<!-- FIN DE DATOS PARA EL CHART -->
+    <div class="col-lg-12">
+        <h3 class="page-header"><?php echo isset($data['report_name']) ? $data['report_name'] : "No Name detected"; ?></h3>            
+    </div>    
+</div>
+<?php echo $__env->make('layouts.date_range', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+<?php if($data['chart']=='true'): ?>
+	<?php echo $__env->make('layouts.chart', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Detalle</h3>
+		</div>
+		<div class="panel-body">
+			<?php 	$labels = json_decode($data['data_chart']['labels']);
+					$data_package = json_decode($data['data_chart']['data']);
+					$i=0;
+					$aux = array();
+					foreach ($data_package->percentage as $percentage) {						
+						$aux[$i] = $percentage;
+						$i++;
+					}
+					$data_package->percentage=array();
+					$data_package->percentage=$aux;
+					$i=0;
+					$aux = array();
+					foreach ($data_package->hours as $hours) {						
+						$aux[$i] = $hours;
+						$i++;
+					}
+					$data_package->hours=array();
+					$data_package->hours=$aux;
+					$i=0;
+					$months = ["Eneno","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+					$encode_data = json_encode($data_package);
+
+			?>
+			<?php echo Form::hidden('values', $encode_data, ['id'=>'data']); ?>
+
+			<?php foreach($labels as $label): ?>
+			<?php $ind_month = $data_chart['month_beg']-1; $year=$data_chart['year_beg']?>
+			<div class="col-lg-12">
+				<div class="col-lg-2">
+				</div>
+				<div class="col-lg-10">
+					<font size="4" color="#337ab7">
+						<?php echo $label; ?>
+
+					</font>
+				</div>
+				<div class="col-lg-2">
+				</div>
+				<div class="col-lg-8">
+				<!-- TABLA DEL INDICADOR -->
+				<table class="table">
+					<tr class="info">
+						<th>Horas/mes</th>
+						<th>Mes-Año</th>
+						<th>Porcentaje</th>
+					</tr>
+					<?php for($j = 0; $j < $data_chart['num_months']; $j++): ?>
+					<tr>
+						<td><?php echo $data_package->hours[$j][$i]; ?><?php echo " hrs"; ?></td>
+						<td><?php echo $months[$ind_month]; ?><?php echo "-"; ?><?php echo $year; ?></td>
+						<td><?php echo $data_package->percentage[$j][$i]; ?><?php echo "%"; ?></td>
+					</tr>
+					<?php $ind_month++;
+						if ($ind_month==12) {
+							$ind_month=0;
+							$year++;
+						}
+					?>
+					<?php endfor; ?>
+				</table>
+				<!-- FIN TABLA DEL INDICADOR -->
+				</div>
+				<div class="col-lg-2">
+				</div>
+			</div>
+			<?php $i++; ?>
+			<?php endforeach; ?>
+		</div>
+	</div>
+
+<?php endif; ?>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('templates.indicatorsTemplate', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
