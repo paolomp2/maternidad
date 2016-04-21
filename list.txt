@@ -1,0 +1,11 @@
++--------+--------------------------------+------------------------------------------------------+------+---------------------------------------------------------------+------------+
+| Domain | Method                         | URI                                                  | Name | Action                                                        | Middleware |
++--------+--------------------------------+------------------------------------------------------+------+---------------------------------------------------------------+------------+
+|        | GET|HEAD                       | auth/login/{one?}/{two?}/{three?}/{four?}/{five?}    |      | Maternidad\Http\Controllers\Auth\AuthController@getLogin      | guest      |
+|        | POST                           | auth/login/{one?}/{two?}/{three?}/{four?}/{five?}    |      | Maternidad\Http\Controllers\Auth\AuthController@postLogin     | guest      |
+|        | GET|HEAD                       | auth/logout/{one?}/{two?}/{three?}/{four?}/{five?}   |      | Maternidad\Http\Controllers\Auth\AuthController@getLogout     |            |
+|        | POST                           | auth/register/{one?}/{two?}/{three?}/{four?}/{five?} |      | Maternidad\Http\Controllers\Auth\AuthController@postRegister  | guest      |
+|        | GET|HEAD                       | auth/register/{one?}/{two?}/{three?}/{four?}/{five?} |      | Maternidad\Http\Controllers\Auth\AuthController@getRegister   | guest      |
+|        | GET|HEAD|POST|PUT|PATCH|DELETE | auth/{_missing}                                      |      | Maternidad\Http\Controllers\Auth\AuthController@missingMethod | guest      |
+|        | GET|HEAD                       | home                                                 |      | Maternidad\Http\Controllers\HomeController@home               | auth       |
++--------+--------------------------------+------------------------------------------------------+------+---------------------------------------------------------------+------------+

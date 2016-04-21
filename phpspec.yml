@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Maternidad
+        psr4_prefix: Maternidad
+        src_path: app
