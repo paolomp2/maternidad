@@ -15,9 +15,35 @@
 		</div>
 		<div class="panel-body">
 		<div class="search_bar">
+			<div class ="row">
+				<div>
+					{!! Form::label('search_codigo_patrimonial','Código Patrimonial') !!}
+				</div>
+				<div class="form-group col-md-4">
+					{!! Form::text('search_codigo_patrimonial',null,['class'=>'form-control']) !!}
+				</div>
+			</div>
+			<div class="row">
+				<div>
+					{!! Form::label('search_numero_serie','Número de serie') !!}
+				</div>
+				<div class="form-group col-md-4">
+
+					{!! Form::text('search_numero_serie',null,['class'=>'form-control']) !!}
+				</div>
+			</div>
+			<div class="row">
+				<div>
+					{!! Form::label('search_modelo','Modelo') !!}
+				</div>
+				<div class="form-group col-md-4">
+
+					{!! Form::text('search_modelo',null,['class'=>'form-control']) !!}
+				</div>
+			</div>
 			<div class="row">						
 				<div class="form-group col-md-4">
-					{!! Form::label('search_fecha_ini','Fecha inicio') !!}
+					{!! Form::label('search_fecha_ini','Fecha inicio *') !!}
 					<div id="datetimepicker_search_anho1" class="form-group input-group date">
 						{!! Form::text('search_fecha_ini',null,['class'=>'form-control','readonly'=>'']) !!}
 						<span class="input-group-addon">
@@ -26,7 +52,7 @@
 					</div>
 				</div>
 				<div class="form-group col-md-4">
-					{!! Form::label('search_fecha_fin','Fecha fin') !!}
+					{!! Form::label('search_fecha_fin','Fecha fin *') !!}
 					<div id="datetimepicker_search_anho2" class="input-group date">
 						{!! Form::text('search_fecha_fin',null,['class'=>'form-control','readonly'=>'']) !!}
 						<span class="input-group-addon">

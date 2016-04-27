@@ -25,7 +25,7 @@ Route::post('/', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 
 
-Route::group(['middleware' => 'auth'], function () {
+
 
 	Route::get('dashboard', 'HomeController@index');
 
@@ -94,6 +94,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('tiempo_medio_de_resolución_de_otm', 'executeController@e_18');
 	Route::post('tiempo_medio_de_resolución_de_otm_rep', 'executeController@e_18_post');
 
-});
+
 
 
