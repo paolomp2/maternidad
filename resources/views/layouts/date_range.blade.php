@@ -16,31 +16,24 @@
 		<div class="panel-body">
 		<div class="search_bar">
 			<div class ="row">
-				<div>
-					{!! Form::label('search_codigo_patrimonial','Código Patrimonial') !!}
-				</div>
 				<div class="form-group col-md-4">
+					{!! Form::label('search_codigo_patrimonial','Código Patrimonial') !!}
 					{!! Form::text('search_codigo_patrimonial',null,['class'=>'form-control']) !!}
 				</div>
 			</div>
 			<div class="row">
-				<div>
-					{!! Form::label('search_numero_serie','Número de serie') !!}
-				</div>
 				<div class="form-group col-md-4">
-
+					{!! Form::label('search_numero_serie','Número de serie') !!}
 					{!! Form::text('search_numero_serie',null,['class'=>'form-control']) !!}
 				</div>
 			</div>
 			<div class="row">
-				<div>
-					{!! Form::label('search_modelo','Modelo') !!}
-				</div>
 				<div class="form-group col-md-4">
-
+					{!! Form::label('search_modelo','Modelo') !!}
 					{!! Form::text('search_modelo',null,['class'=>'form-control']) !!}
 				</div>
 			</div>
+
 			<div class="row">						
 				<div class="form-group col-md-4">
 					{!! Form::label('search_fecha_ini','Fecha inicio *') !!}

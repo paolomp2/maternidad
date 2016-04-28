@@ -17,9 +17,34 @@
 		</div>
 		<div class="panel-body">
 		<div class="search_bar">
+			<div class ="row">
+				<div class="form-group col-md-4">
+					<?php echo Form::label('search_codigo_patrimonial','Código Patrimonial'); ?>
+
+					<?php echo Form::text('search_codigo_patrimonial',null,['class'=>'form-control']); ?>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-4">
+					<?php echo Form::label('search_numero_serie','Número de serie'); ?>
+
+					<?php echo Form::text('search_numero_serie',null,['class'=>'form-control']); ?>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-md-4">
+					<?php echo Form::label('search_modelo','Modelo'); ?>
+
+					<?php echo Form::text('search_modelo',null,['class'=>'form-control']); ?>
+
+				</div>
+			</div>
+
 			<div class="row">						
 				<div class="form-group col-md-4">
-					<?php echo Form::label('search_fecha_ini','Fecha inicio'); ?>
+					<?php echo Form::label('search_fecha_ini','Fecha inicio *'); ?>
 
 					<div id="datetimepicker_search_anho1" class="form-group input-group date">
 						<?php echo Form::text('search_fecha_ini',null,['class'=>'form-control','readonly'=>'']); ?>
@@ -30,7 +55,7 @@
 					</div>
 				</div>
 				<div class="form-group col-md-4">
-					<?php echo Form::label('search_fecha_fin','Fecha fin'); ?>
+					<?php echo Form::label('search_fecha_fin','Fecha fin *'); ?>
 
 					<div id="datetimepicker_search_anho2" class="input-group date">
 						<?php echo Form::text('search_fecha_fin',null,['class'=>'form-control','readonly'=>'']); ?>

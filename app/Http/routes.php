@@ -20,7 +20,7 @@ Route::controllers([
 ]);
 
 // Authentication routes...
-Route::get('/', 'Auth\AuthController@getLogin');
+Route::get('/', 'HomeController@index');
 Route::post('/', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 
