@@ -25,7 +25,7 @@ Route::post('/', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 
 
-
+Route::group(['middleware' => 'otTimes'], function () {
 
 	Route::get('dashboard', 'HomeController@index');
 
@@ -95,5 +95,7 @@ Route::get('/logout', 'Auth\AuthController@getLogout');
 	Route::post('tiempo_medio_de_resolución_de_otm_rep', 'executeController@e_18_post');
 
 
-
+	
+	
+});
 

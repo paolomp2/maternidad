@@ -29,5 +29,6 @@ class Kernel extends HttpKernel
         'auth' => \Maternidad\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \Maternidad\Http\Middleware\RedirectIfAuthenticated::class,
+        'otTimes' => \Maternidad\Http\Middleware\otTimes::class,
     ];
 }
