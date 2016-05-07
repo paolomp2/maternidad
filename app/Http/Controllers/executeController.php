@@ -85,12 +85,15 @@ class executeController extends Controller
     public function e_6()
     {
         $data=[
-            'page_name' => "Indicador de ejecución",
-            'siderbar_type' => "execute",
-            'method' => "get",
+            'page_name' => "Número de OTM generados",//nombre de la p'agina
+            'siderbar_type' => "execute",//Tipo de siderbar que se requere desplegar
+            'method' => "get",//M'etodo que se esta ejecutando
+            'url_post' => "numero_otm_generados_rep",//url post al que apunta el formulario de rangos de fecha
+            'report_name' => "Número de OTM generados",
+            'chart' => 'false',
         ];
 
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_7()
@@ -782,7 +785,7 @@ class executeController extends Controller
             'method' => "POST",
         ];
 
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_7_post(Request $request)
