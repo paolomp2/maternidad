@@ -25,6 +25,8 @@
 <!--CHARTS-CSS-->
 <link rel="stylesheet" href="<?php echo e(asset('charts/chartist.min.css')); ?>">
 
+<link rel="stylesheet" href="<?php echo e(asset('css/chosen.css')); ?>">
+
 <script type="text/javascript">        
 </script>
 <!-- jQuery -->
@@ -53,6 +55,8 @@
 <script src="<?php echo e(asset('js/date_picker.js')); ?>"></script>
 <!--CHARTS Javascritp-->
 <script src="<?php echo e(asset('js/Chart.js')); ?>"></script>
+<!--SELECTS Javascritp-->
+<script src="<?php echo e(asset('js/chosen.jquery.js')); ?>"></script>
 
 <?php if($data['chart']=='true'): ?>
 

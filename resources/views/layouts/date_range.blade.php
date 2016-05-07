@@ -20,14 +20,12 @@
 					{!! Form::label('search_codigo_patrimonial','Código Patrimonial') !!}
 					{!! Form::text('search_codigo_patrimonial',null,['class'=>'form-control']) !!}
 				</div>
-			</div>
-			<div class="row">
+			
 				<div class="form-group col-md-4">
 					{!! Form::label('search_numero_serie','Número de serie') !!}
 					{!! Form::text('search_numero_serie',null,['class'=>'form-control']) !!}
 				</div>
-			</div>
-			<div class="row">
+			
 				<div class="form-group col-md-4">
 					{!! Form::label('search_modelo','Modelo') !!}
 					{!! Form::text('search_modelo',null,['class'=>'form-control']) !!}
@@ -42,11 +40,9 @@
 					'1' => 'GRUPO 1: EQUIPOS BIOMEDICOS DE CIRUGIA', 
 					'2' => 'GRUPO 2: EQUIPOS BIOMEDICOS DE NEONATOLOGIA', 
 					'3' => 'GRUPO 3: EQUIPOS BIOMEDICOS DE APOYO AL DIAGNOSTICO E IMAGENOLOGIA',
-					'4' => 'GRUPO 4: EQUIPOS BIOMEDICOS DE LABORATORIO')) !!}
+					'4' => 'GRUPO 4: EQUIPOS BIOMEDICOS DE LABORATORIO'),null,['class'=>'form-control chosen-select']) !!}
 				</div>
-			</div>
-
-			<div class="row">
+			
 				<div class="form-group col-md-4">
 					{!! Form::label('search_servicio','Servicio') !!}
 					{!! Form::select('search_servicio', array(
@@ -90,7 +86,7 @@
 					'37' => 'GINECOLOGIA ESPECIALIZADA',
 					'38' => 'REHABILITACION',
 					'39' => 'CIRUGIA NEONATAL'
-					)) !!}
+					),null,['class'=>'form-control chosen-select']) !!}
 				</div>
 			</div>
 
@@ -126,3 +122,12 @@
 		</div>
 	</div>
 {!! Form::close() !!}</br>
+
+<script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+  </script>
