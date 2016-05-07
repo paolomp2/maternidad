@@ -25,6 +25,8 @@
 <!--CHARTS-CSS-->
 <link rel="stylesheet" href="{{ asset('charts/chartist.min.css') }}">
 
+<link rel="stylesheet" href="{{ asset('css/chosen.css') }}">
+
 <script type="text/javascript">        
 </script>
 <!-- jQuery -->
@@ -53,6 +55,8 @@
 <script src="{{asset('js/date_picker.js') }}"></script>
 <!--CHARTS Javascritp-->
 <script src="{{asset('js/Chart.js') }}"></script>
+<!--SELECTS Javascritp-->
+<script src="{{asset('js/chosen.jquery.js') }}"></script>
 
 @if($data['chart']=='true')
 
