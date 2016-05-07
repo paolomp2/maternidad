@@ -313,9 +313,11 @@ class executeController extends Controller
                     }
                     else{
                             $otCorrectivos = OtCorrectivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->orderBy('idot_correctivo', 'DESC')->get();
+                            $OtPreventivos = OtPreventivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->orderBy('idot_preventivo', 'DESC')->get();       
                             $OtPreventivos = OtPreventivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->orderBy('idot_preventivo', 'DESC')->get();   
                     }
 
+          
                 $ots_array[0]=$otCorrectivos;
                 $ots_array[1]=$OtPreventivos;
 
@@ -354,9 +356,8 @@ class executeController extends Controller
         }
 
 
-       //echo dd($data_procces);
-
-  
+         
+         
          $data_chart['labels']=json_encode($name_assets);
         $data_chart['data']['percentage']=[];
         for ($i=1; $i <= $data_chart['num_months'] ; $i++) { 
@@ -699,6 +700,7 @@ class executeController extends Controller
 
              
 
+          
                 $ots_array[0]=$otCorrectivos;
                 $ots_array[1]=$OtPreventivos;
 
@@ -737,9 +739,8 @@ class executeController extends Controller
         }
 
 
-       //echo dd($data_procces);
-
-  
+         
+         
          $data_chart['labels']=json_encode($name_assets);
         $data_chart['data']['percentage']=[];
         for ($i=1; $i <= $data_chart['num_months'] ; $i++) { 
@@ -878,6 +879,7 @@ class executeController extends Controller
 
              
 
+          
                 $ots_array[0]=$otCorrectivos;
                 $ots_array[1]=$OtPreventivos;
 
