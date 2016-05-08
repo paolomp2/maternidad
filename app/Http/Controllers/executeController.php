@@ -78,7 +78,7 @@ class executeController extends Controller
             'page_name' => "Indicador medio de atención SOT",
             'siderbar_type' => "execute",
             'method' => "get",
-            'url_post' => "tiempo_medio_de_atencion_sot",//url post al que apunta el formulario de rangos de fecha
+            'url_post' => "tiempo_medio_de_atención_de_sot_rep",//url post al que apunta el formulario de rangos de fecha
             'report_name' => "Indicador de tiempo medio de atención SOT",
             'chart' => 'false',
         ];
@@ -1107,20 +1107,20 @@ class executeController extends Controller
         }
 
 
-       echo dd($data_procces);
+      // echo dd($data_procces);
 
   
          $data_chart['labels']=json_encode($name_assets);
         $data_chart['data']['percentage']=[];
         for ($i=1; $i <= $data_chart['num_months'] ; $i++) { 
             if (!is_null($data_procces[$i])) {
-                for ($j=0; $j < count($id_assets) ; $j++) {
+                for ($j=0; $j < count($id_assets); $j++) {
 
 
                     if(array_key_exists($j,$data_procces[$i]))
                     {
-                        $data_chart['data']['percentage'][$i][$j]=($data_procces[$data_chart[$i]][$j]['minutes']/60)/count($data_procces[$data_chart['num_months']][$ind_activos]);
-                        $data_chart['data']['hours'][$i][$j]=$data_procces[$data_chart[$i]][$j]['minutes']/60;
+                        $data_chart['data']['percentage'][$i][$j]=($data_procces[$i][$j]['minutes']/60)/count($data_procces[$i][$j]);
+                        $data_chart['data']['hours'][$i][$j]=$data_procces[$i][$j]['minutes']/60;
                     }else{
                         $data_chart['data']['percentage'][$i][$j]=0;
                         $data_chart['data']['hours'][$i][$j]=0;
@@ -1128,7 +1128,7 @@ class executeController extends Controller
                 }
             }else{
                 for ($j=0; $j < count($id_assets) ; $j++) {
-                    $data_chart['data']['nAverias'][$i][$j]=0;
+                    $data_chart['data']['percentage'][$i][$j]=0;
                     $data_chart['data']['hours'][$i][$j]=0;
                 }
             }
@@ -1136,13 +1136,13 @@ class executeController extends Controller
 
          $data_chart['data']=json_encode($data_chart['data']);
 
-        
+        //echo dd($data_chart);
 
         $data=[
             'page_name' => "Indicador medio de atención SOT",
             'siderbar_type' => "execute",
             'method' => "get",
-            'url_post' => "tiempo_medio_atencion_sot_rep",//url post al que apunta el formulario de rangos de fecha
+            'url_post' => "tiempo_medio_de_atención_de_sot_rep",//url post al que apunta el formulario de rangos de fecha
             'report_name' => "Indicador de tiempo medio de atención SOT",
             'chart' => 'true',
             'chart_model' => 'execute.time.1',
@@ -1155,6 +1155,83 @@ class executeController extends Controller
 
     public function e_6_post(Request $request)
     {
+              /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+
+
+        $data_chart=null;
+        $data_chart['year_beg']=$date_start_c->year;
+        $data_chart['year_end']=$date_end_c->year;
+        $data_chart['month_beg']=$date_start_c->month;
+        $data_chart['month_end']=$date_end_c->month;
+
+        //->toDateTimeString();
+        $data_chart['num_months']=0;
+        $data_procces=array();//Array que contiene la data a procesar
+        $id_assets=array();//contiene las ids de los activos
+        $name_assets=array();//contiene las ids de los activos
+        $count_month=array();//d'ias de un mes
+        
+        
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+
+        while($date_start_c<$date_end_c)
+        {
+            echo $date_start_c;
+            echo $date_end_c;
+            $data_chart['num_months']++;
+            $data_procces[$data_chart['num_months']]=null;
+
+            //Preparing 
+            $end_current_month = $date_start_c->copy()->endOfMonth();
+            //cantidad de dias de mes
+            $count_month[$data_chart['num_months']]=$end_current_month->day;
+
+
+            $otCorrectivos = DB::table('servicios')
+                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.created_at','>=', $end_current_month)
+                                
+                                ->groupby('servicios.nombre')
+                                ->get();
+
+              $OtPreventivos = DB::table('servicios')
+                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.created_at','>=', $end_current_month)
+                                
+                                ->groupby('servicios.nombre')
+                                ->get();
+
+            
+            
+            $date_start_c->addMonth();
+
+        }
+
         $data=[
             'page_name' => "Indicador de ejecución",
             'siderbar_type' => "execute",
@@ -1166,6 +1243,85 @@ class executeController extends Controller
 
     public function e_7_post(Request $request)
     {
+              /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+
+
+        $data_chart=null;
+        $data_chart['year_beg']=$date_start_c->year;
+        $data_chart['year_end']=$date_end_c->year;
+        $data_chart['month_beg']=$date_start_c->month;
+        $data_chart['month_end']=$date_end_c->month;
+
+        //->toDateTimeString();
+        $data_chart['num_months']=0;
+        $data_procces=array();//Array que contiene la data a procesar
+        $id_assets=array();//contiene las ids de los activos
+        $name_assets=array();//contiene las ids de los activos
+        $count_month=array();//d'ias de un mes
+        
+        
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+
+        while($date_start_c<$date_end_c)
+        {
+            echo $date_start_c;
+            echo $date_end_c;
+            $data_chart['num_months']++;
+            $data_procces[$data_chart['num_months']]=null;
+
+            //Preparing 
+            $end_current_month = $date_start_c->copy()->endOfMonth();
+            //cantidad de dias de mes
+            $count_month[$data_chart['num_months']]=$end_current_month->day;
+
+
+            $otCorrectivos = DB::table('servicios')
+                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                
+                                ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
+                                ->groupby('servicios.nombre')
+                                ->get();
+
+              $OtPreventivos = DB::table('servicios')
+                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                
+                                ->where('ot_preventivos.fecha_termino_ejecucion','<=', $end_current_month)
+                                ->groupby('servicios.nombre')
+                                ->get();
+
+            
+            
+            $date_start_c->addMonth();
+
+        }
+
+
+
         $data=[
             'page_name' => "Indicador de ejecución",
             'siderbar_type' => "execute",
