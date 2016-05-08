@@ -41,7 +41,7 @@ class executeController extends Controller
             'chart' => 'false',
         ];
 
-        return view('indicators.execute.2',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_3()
@@ -113,7 +113,7 @@ class executeController extends Controller
             'chart' => 'false',
         ];
 
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_8()
@@ -127,7 +127,7 @@ class executeController extends Controller
             'chart' => 'false',
         ];
 
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_9()
@@ -141,7 +141,7 @@ class executeController extends Controller
             'chart' => 'false',
         ];
 
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_10()
@@ -155,29 +155,33 @@ class executeController extends Controller
             'chart' => 'false',
         ];
 
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_11()
     {
-        $data=[
-            'page_name' => "Indicador de ejecución",
+         $data=[
+           'page_name' => "Indicador de ejecución",
             'siderbar_type' => "execute",
             'method' => "get",
+            'url_post' => "solicitudes_de_trabajo_atendidos_rep",// Ot Pendiente
+            'report_name' => "Número de trabajos atendidos",
+            'chart' => 'false',
         ];
-
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_12()
     {
-        $data=[
-            'page_name' => "Indicador de ejecución",
+         $data=[
+           'page_name' => "Indicador de ejecución",
             'siderbar_type' => "execute",
             'method' => "get",
+            'url_post' => "solicitudes_de_trabajo_no_atendidos_rep",// Ot Pendiente
+            'report_name' => "Número de trabajos atendidos",
+            'chart' => 'false',
         ];
-
-        return view('indicators.execute.1',compact('data'));
+        return view('indicators.execute.6',compact('data'));
     }
 
     public function e_13()
@@ -1266,7 +1270,7 @@ class executeController extends Controller
 
     public function e_7_post(Request $request)
     {
-              /*Validator section*/
+     /*Validator section*/
         $validator = Validator::make($request->all(),$this->getValidations(true));
 
         if ($validator->fails()) {
@@ -1362,7 +1366,7 @@ class executeController extends Controller
 
     public function e_8_post(Request $request)
     {
-                      /*Validator section*/
+     /*Validator section*/
         $validator = Validator::make($request->all(),$this->getValidations(true));
 
         if ($validator->fails()) {
@@ -1612,26 +1616,14 @@ class executeController extends Controller
                                      $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
                                   
                                  })
-                                
                                 ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
-                                ->where('ot_correctivos.fecha_termino_ejecucion','<=', $date_end_c)
+                                ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
 
-              $OtPreventivos = DB::table('servicios')
-                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idsolicitud_orden_trabajo) as ordenDeTrabajo')))
-                             ->leftJoin('ot_preventivos', function($join)
-                                 {
-                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
-                                  
-                                 })
-                                
-                                ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
-                                ->where('ot_preventivos.fecha_termino_ejecucion','<=', $date_end_c)
-                                ->groupby('servicios.nombre')
-                                ->orderBy('servicios.nombre')
-                                ->get();
+           
+            echo dd($otCorrectivos);
 
              $ots_array[0]=$otCorrectivos;
              $ots_array[1]=$OtPreventivos;
@@ -1714,8 +1706,7 @@ class executeController extends Controller
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
-
-              $OtPreventivos = DB::table('servicios')
+            $OtPreventivos = DB::table('servicios')
                              ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
                              ->leftJoin('ot_preventivos', function($join)
                                  {
@@ -1725,9 +1716,11 @@ class executeController extends Controller
                                 ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
                                 ->where('ot_preventivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->where('ot_preventivos.idestado_final','=',19)
+
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
+            echo dd($otCorrectivos);
 
              $ots_array[0]=$otCorrectivos;
              $ots_array[1]=$OtPreventivos;
