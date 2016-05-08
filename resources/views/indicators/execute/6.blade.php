@@ -1,13 +1,10 @@
 @extends('templates.indicatorsTemplate')
-
 @section('content')
 
-<div class="row">
-	
+<div class="row">	
 	<!-- DATOS PARA EL CHART -->
 	@if($data['chart']=='true')
-		<?php $data_chart = $data['data_chart'] ?>
-		{!! Form::hidden('labels', $data_chart['labels'], ['id'=>'labels']) !!}
+		<?php $data_chart = $data['data_chart'] ?>		
 		{!! Form::hidden('num_months', $data_chart['num_months'], ['id'=>'num_months']) !!}	
 		{!! Form::hidden('year_beg', $data_chart['year_beg'], ['id'=>'year_beg']) !!}
 		{!! Form::hidden('year_end', $data_chart['year_end'], ['id'=>'year_end']) !!}
@@ -31,74 +28,46 @@
 			<h3 class="panel-title">Detalle</h3>
 		</div>
 		<div class="panel-body">
-			<?php 	$labels = json_decode($data['data_chart']['labels']);
-					$data_package = json_decode($data['data_chart']['data']);
-					$i=0;
-					$aux = array();
-					foreach ($data_package->percentage as $percentage) {						
-						$aux[$i] = $percentage;
-						$i++;
-					}
-					$data_package->percentage=array();
-					$data_package->percentage=$aux;
-					$i=0;
-					$aux = array();
-					foreach ($data_package->hours as $hours) {						
-						$aux[$i] = $hours;
-						$i++;
-					}
-					$data_package->hours=array();
-					$data_package->hours=$aux;
-					$i=0;
-					$months = ["Eneno","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-					$encode_data = json_encode($data_package);
-
-			?>
-			{!! Form::hidden('values', $encode_data, ['id'=>'data']) !!}
-			@foreach($labels as $label)
-			<?php $ind_month = $data_chart['month_beg']-1; $year=$data_chart['year_beg']?>
+			<?php   $nombresServicios = $data_chart['nombresServicios'];?>									
+                                
 			<div class="col-lg-12">
 				<div class="col-lg-2">
 				</div>
 				<div class="col-lg-10">
 					<font size="4" color="#337ab7">
-						{!!$label!!}
+						
 					</font>
 				</div>
 				<div class="col-lg-2">
 				</div>
 				<div class="col-lg-8">
+                                                                        
 				<!-- TABLA DEL INDICADOR -->
 				<table class="table">
 					<tr class="info">
-						<th>Horas/mes</th>
-						<th>Mes-Año</th>
-						<th>Porcentaje</th>
-					</tr>
-					@for ($j = 0; $j < $data_chart['num_months']; $j++)
+                                            <th>Servicios</th>
+                                            <th>Preventivo</th>
+                                            <th>Correctivo</th>
+                                            <th>Metrológico</th>
+                                            <th>Inspecciones</th>
+					</tr>		
+                                        <?php foreach($nombresServicios as $s) {  ?>
 					<tr>
-						<td>{!!$data_package->hours[$j][$i]!!}{!!" hrs"!!}</td>
-						<td>{!!$months[$ind_month]!!}{!!"-"!!}{!!$year!!}</td>
-						<td>{!!$data_package->percentage[$j][$i]!!}{!!"%"!!}</td>
-					</tr>
-					<?php $ind_month++;
-						if ($ind_month==12) {
-							$ind_month=0;
-							$year++;
-						}
-					?>
-					@endfor
+                                            <td><?php echo $s; ?></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+					</tr>	
+                                        <?php } ?>
 				</table>
 				<!-- FIN TABLA DEL INDICADOR -->
 				</div>
 				<div class="col-lg-2">
 				</div>
-			</div>
-			<?php $i++; ?>
-			@endforeach
+			</div>						
 		</div>
 	</div>
-
 @endif
 
 @endsection

@@ -10,6 +10,7 @@ use Validator;
 use Maternidad\OtCorrectivo;
 use Maternidad\OtPreventivo;
 use Maternidad\Activo;
+use Maternidad\Servicio;
 use Carbon\Carbon;
 use DB;
 
@@ -788,11 +789,8 @@ class executeController extends Controller
                 }
             }
         }
-
         
-        $data_chart['data']=json_encode($data_chart['data']);
-
-        
+        $data_chart['data']=json_encode($data_chart['data']);       
 
         $data=[
             'page_name' => "Indicador de ejecución",//nombre de la p'agina
@@ -806,6 +804,8 @@ class executeController extends Controller
             'data_chart' => $data_chart,
             ];
 
+        //print_r($data_chart);
+        
         return view('indicators.execute.1',compact('data')); 
     }
 
@@ -1158,7 +1158,7 @@ class executeController extends Controller
              'method' => "get",
              'url_post' => "tiempo_medio_de_atención_de_sot_rep",//url post al que apunta el formulario de rangos de fecha
              'report_name' => "Indicador de tiempo medio de atención SOT",
-             'chart' => 'true',
+             'chart' => 'false',
              'chart_model' => 'execute.time.1',
              'chart_title' => 'Tiempo medio de Atención de SOT',
              'data_chart' => $data_chart,
@@ -1167,15 +1167,12 @@ class executeController extends Controller
          return view('indicators.execute.3',compact('data')); 
      }
 
-      public function e_6_post(Request $request)
-     {
+    public function e_6_post(Request $request) {
               /*Validator section*/
         $validator = Validator::make($request->all(),$this->getValidations(true));
 
         if ($validator->fails()) {
-            return redirect('disponibilidad')
-                        ->withErrors($validator)
-                        ->withInput();
+            return redirect('disponibilidad')->withErrors($validator)->withInput();
         }
 
         $fechamin = $request->search_fecha_ini;
@@ -1184,7 +1181,6 @@ class executeController extends Controller
         /*Fecha de inicio y fecha fin*/
         $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
         $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
-
 
         $data_chart=null;
         $data_chart['year_beg']=$date_start_c->year;
@@ -1198,60 +1194,74 @@ class executeController extends Controller
         $id_assets=array();//contiene las ids de los activos
         $name_assets=array();//contiene las ids de los activos
         $count_month=array();//d'ias de un mes
-        
-        
+                
         $otCorrectivos=null;
         $OtPreventivos=null;
 
-        while($date_start_c<$date_end_c)
-        {
-            echo $date_start_c;
-            echo $date_end_c;
+        $services_aux = Servicio::all();
+        $i=0;
+        foreach($services_aux as $s) {
+            $i++;
+            $nombresServicios[$i] = $s->nombre;
+        }
+        
+        $data_chart['nombresServicios'] = $nombresServicios;
+        //print_r($assets);
+        
+        while($date_start_c<$date_end_c) {
+            //echo "inicio: ". $date_start_c. " ";
+            //echo "fin: ". $date_end_c. " ";
+            
             $data_chart['num_months']++;
-            $data_procces[$data_chart['num_months']]=null;
+            //$data_procces[$data_chart['num_months']]=null;
 
             //Preparing 
             $end_current_month = $date_start_c->copy()->endOfMonth();
             //cantidad de dias de mes
             $count_month[$data_chart['num_months']]=$end_current_month->day;
 
-
             $otCorrectivos = DB::table('servicios')
                              ->select(array('servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
-                             ->leftJoin('ot_correctivos', function($join)
-                                 {
-                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
-                                  
+                             ->leftJoin('ot_correctivos', function($join){
+                                    $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');                                  
                                  })
-                                ->where('ot_correctivos.created_at','>=', $end_current_month)
-                                
+                                ->where('ot_correctivos.created_at','>=', $end_current_month)                                
                                 ->groupby('servicios.nombre')
-                                ->get();
-
-              $OtPreventivos = DB::table('servicios')
-                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
-                             ->leftJoin('ot_preventivos', function($join)
-                                 {
-                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
-                                  
-                                 })
-                                ->where('ot_preventivos.created_at','>=', $end_current_month)
-                                
-                                ->groupby('servicios.nombre')
-                                ->get();
-
+                                ->orderBy('servicios.nombre')
+                                ->get();                        
             
+            $OtPreventivos = DB::table('servicios')
+                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join) {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');                                  
+                                 })
+                                ->where('ot_preventivos.created_at','>=', $end_current_month)                                
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+            $ots_array[0]=$otCorrectivos;
+            $ots_array[1]=$OtPreventivos;
             
             $date_start_c->addMonth();
-
         }
-
+        //echo " ots array ";
+        //print_r($ots_array);
+        //echo " fin ots array ";
         $data=[
-            'page_name' => "Indicador de ejecución",
-            'siderbar_type' => "execute",
-            'method' => "POST",
+            'page_name' => "Número de OTM generados",//nombre de la p'agina
+            'siderbar_type' => "execute",//Tipo de siderbar que se requere desplegar
+            'method' => "get",//M'etodo que se esta ejecutando
+            'url_post' => "numero_otm_generados_rep",//url post al que apunta el formulario de rangos de fecha
+            'report_name' => "Número de OTM generados",
+            'chart' => 'true',
+            'chart_model' => 'execute.time.1',
+            'chart_title' => 'Número de OTM generados',
+            'data_chart' => $data_chart,
         ];
-
+        //echo " data chart ";
+        //print_r($data_chart);
+        
         return view('indicators.execute.6',compact('data'));
     }
 
@@ -1337,13 +1347,11 @@ class executeController extends Controller
 
         }
 
-
-
         $data=[
             'page_name' => "Indicador de ejecución",
             'siderbar_type' => "execute",
             'method' => "get",
-             'url_post' => "numero_otm_acabados_rep",//url post al que apunta el formulario de rangos de fecha
+            'url_post' => "numero_otm_acabados_rep",//url post al que apunta el formulario de rangos de fecha
             'report_name' => "Número de OTM acabados",
             'chart' => 'true',
         ];
