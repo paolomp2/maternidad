@@ -19,13 +19,12 @@
 	@endif
 	<!-- FIN DE DATOS PARA EL CHART -->
     <div class="col-lg-12">
-        <h3 class="page-header">{!!$data['report_name'] or "No Name detected"!!}</h3>            
+        <h3 class="page-header">{!!$data['report_name'] or "Ningún nombre detectado"!!}</h3>            
     </div>    
 </div>
 @include('layouts.date_range_only')
 
-@if($data['chart']=='true')
-	@include('layouts.chart')
+@if($data['chart']=='true')	
 
 	<div class="panel panel-default">
 		<div class="panel-heading">

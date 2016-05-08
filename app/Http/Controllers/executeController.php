@@ -979,12 +979,62 @@ class executeController extends Controller
         return view('indicators.execute.1',compact('data'));
     }
 
-    public function e_6_post(Request $request)
-    {
+    public function e_6_post(Request $request) {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+
+        if ($validator->fails()) {
+            return redirect('numero_otm_generados')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+
+        $data_chart=null;
+        $data_chart['year_beg']=$date_start_c->year;
+        $data_chart['year_end']=$date_end_c->year;
+        $data_chart['month_beg']=$date_start_c->month;
+        $data_chart['month_end']=$date_end_c->month;
+
+        //->toDateTimeString();
+        $data_chart['num_months']=0;
+        $data_procces=array();//Array que contiene la data a procesar
+        $id_assets=array();//contiene las ids de los activos
+        $name_assets=array();//contiene las ids de los activos
+        $count_month=array();//d'ias de un mes
+
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+
+         while($date_start_c<$date_end_c) {
+            $data_chart['num_months']++;
+            $data_procces[$data_chart['num_months']]=null;
+
+            //Preparing 
+            $end_current_month = $date_start_c->copy()->endOfMonth();
+            //cantidad de dias de mes
+            $count_month[$data_chart['num_months']]=$end_current_month->day;
+
+
+
+
+        }
+
         $data=[
             'page_name' => "Indicador de ejecución",
             'siderbar_type' => "execute",
             'method' => "POST",
+            'url_post' => "numero_otm_generados_rep",//url post al que apunta el formulario de rangos de fecha
+            'report_name' => "Número de OTM generados",
+            'chart' => 'false',
+            //'chart_model' => 'execute.time.1',
+            //'chart_title' => 'OTM generados',
+            'data_chart' => $data_chart,
         ];
 
         return view('indicators.execute.6',compact('data'));
