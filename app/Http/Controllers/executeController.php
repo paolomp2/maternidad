@@ -1225,6 +1225,7 @@ class executeController extends Controller
                                 ->where('ot_correctivos.created_at','<=', $end_current_month)
                                 ->where('ot_correctivos.created_at','>=', $date_start_c)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
               $OtPreventivos = DB::table('servicios')
@@ -1238,6 +1239,7 @@ class executeController extends Controller
                                 ->where('ot_preventivos.created_at','>=', $date_start_c)
                                 
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
              $ots_array[0]=$otCorrectivos;
@@ -1321,6 +1323,7 @@ class executeController extends Controller
                                 ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
                                 ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
               $OtPreventivos = DB::table('servicios')
@@ -1333,6 +1336,7 @@ class executeController extends Controller
                                 ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
                                 ->where('ot_preventivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
              $ots_array[0]=$otCorrectivos;
@@ -1416,6 +1420,7 @@ class executeController extends Controller
                                 ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->whereNull('ot_correctivos.idestado_final')
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
               $OtPreventivos = DB::table('servicios')
@@ -1429,6 +1434,7 @@ class executeController extends Controller
                                 ->where('ot_preventivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->whereNull('ot_preventivos.idestado_final') //deberia ser No activo pero no hay en BD
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
              $ots_array[0]=$otCorrectivos;
@@ -1513,6 +1519,7 @@ class executeController extends Controller
                                 ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->where('ot_correctivos.idestado_final','=',9)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
               $OtPreventivos = DB::table('servicios')
@@ -1526,6 +1533,7 @@ class executeController extends Controller
                                 ->where('ot_preventivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->where('ot_preventivos.idestado_final','=',9)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
              $ots_array[0]=$otCorrectivos;
@@ -1608,6 +1616,7 @@ class executeController extends Controller
                                 ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
                                 ->where('ot_correctivos.fecha_termino_ejecucion','<=', $date_end_c)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
               $OtPreventivos = DB::table('servicios')
@@ -1621,6 +1630,7 @@ class executeController extends Controller
                                 ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
                                 ->where('ot_preventivos.fecha_termino_ejecucion','<=', $date_end_c)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
              $ots_array[0]=$otCorrectivos;
@@ -1702,6 +1712,7 @@ class executeController extends Controller
                                 ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->where('ot_correctivos.idestado_final','=',19)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
               $OtPreventivos = DB::table('servicios')
@@ -1715,6 +1726,7 @@ class executeController extends Controller
                                 ->where('ot_preventivos.fecha_termino_ejecucion','<=', $end_current_month)
                                 ->where('ot_preventivos.idestado_final','=',19)
                                 ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
                                 ->get();
 
              $ots_array[0]=$otCorrectivos;
