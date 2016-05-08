@@ -53,7 +53,7 @@
 					$data_package->hours=array();
 					$data_package->hours=$aux;
 					$i=0;
-					$months = ["Eneno","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+					$months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 					$encode_data = json_encode($data_package);
 
 			?>
