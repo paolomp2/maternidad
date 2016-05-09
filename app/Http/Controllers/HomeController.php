@@ -22,64 +22,45 @@ class HomeController extends Controller
 
     public function index()
     {
+        
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Indicador de ejecución";//nombre de la p'agin;
 
-        $data=[
-            'page_name' => "Inicio",
-            'siderbar_type' => "",
-            'chart' => false,
-            'chart_model' => '',
-        ];
-
-        return view('home',compact('data'));
+        return view('home',compact('dataContainer'));
     }
     
     public function execute ()
     {
-        $data=[
-            'page_name' => "Ejecución",
-            'siderbar_type' => "execute",
-            'chart' => false,
-            'chart_model' => '',
-        ];
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Ejecución";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";
 
-        return view('home',compact('data'));
+        return view('home',compact('dataContainer'));
     }
 
     
     public function assets ()
     {
-        $data=[
-            'page_name' => "Dashboard",
-            'siderbar_type' => "",
-            'chart' => false,
-            'chart_model' => '',
-        ];
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
 
-        return view('home',compact('data'));
+        return view('home',compact('dataContainer'));
     }
 
     public function requirements ()
     {
-        $data=[
-            'page_name' => "Dashboard",
-            'siderbar_type' => "",
-            'chart' => false,
-            'chart_model' => '',
-        ];
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
 
-        return view('home',compact('data'));
+        return view('home',compact('dataContainer'));
     }
 
     public function providers ()
     {
-        $data=[
-            'page_name' => "Dashboard",
-            'siderbar_type' => "",
-            'chart' => false,
-            'chart_model' => '',
-        ];
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
 
-        return view('home',compact('data'));
+        return view('home',compact('dataContainer'));
     }
 
     /**

@@ -5,14 +5,14 @@
 <div class="row">
 	
 	<!-- DATOS PARA EL CHART -->
-	@if($data['chart']=='true')
-	<?php $data_chart = $data['data_chart'] ?>
+	@if($dataContainer->chart==true)
+	<?php $data_chart = $dataContainer->data_chart ?>
 	{!! Form::hidden('labels', $data_chart['labels'], ['id'=>'labels']) !!}
 	{!! Form::hidden('num_months', $data_chart['num_months'], ['id'=>'num_months']) !!}	
 	{!! Form::hidden('year_beg', $data_chart['year_beg'], ['id'=>'year_beg']) !!}
 	{!! Form::hidden('year_end', $data_chart['year_end'], ['id'=>'year_end']) !!}
-	{!! Form::hidden('month_beg', $data_chart['month_beg']-1, ['id'=>'month_beg']) !!}
-	{!! Form::hidden('month_end', $data_chart['month_end']-1, ['id'=>'month_end']) !!}
+	{!! Form::hidden('month_beg', $data_chart['month_beg'], ['id'=>'month_beg']) !!}
+	{!! Form::hidden('month_end', $data_chart['month_end'], ['id'=>'month_end']) !!}
 
 	@for($i=0;$i<$data_chart['num_months'];$i++)
 
@@ -20,12 +20,12 @@
 	@endif
 	<!-- FIN DE DATOS PARA EL CHART -->
     <div class="col-lg-12">
-        <h3 class="page-header">{!!$data['report_name'] or "No Name detected"!!}</h3>            
+        <h3 class="page-header">{!!$dataContainer->report_name!!}</h3>            
     </div>    
 </div>
 @include('layouts.date_range')
 
-@if($data['chart']=='true')
+@if($dataContainer->chart==true)
 	@include('layouts.chart')
 
 
@@ -34,8 +34,8 @@
 			<h3 class="panel-title">Detalle</h3>
 		</div>
 		<div class="panel-body">
-			<?php 	$labels = json_decode($data['data_chart']['labels']);
-					$data_package = json_decode($data['data_chart']['data']);
+			<?php 	$labels = json_decode($data_chart['labels']);
+					$data_package = json_decode($data_chart['data']);
 					$i=0;
 					$aux = array();
 					foreach ($data_package->percentage as $percentage) {						

@@ -7,32 +7,42 @@
 	        </ul>
 	    </div>
 	@endif
-{!! Form::open(['url'=>$data['url_post'],'role'=>'form', 'id'=>'search-form','class' => 'form-group']) !!}
+
+{!! Form::open(['url'=>$dataContainer->url_post,'role'=>'form', 'id'=>'search-form','class' => 'form-group']) !!}
 	{!!Form::token()!!}
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">Rango de fechas para el reporte</h3>
+			<h3 class="panel-title">Rellene los campos requeridos</h3>
 		</div>
 		<div class="panel-body">
 		<div class="search_bar">
+
+
 			<div class ="row">
+				@if($dataContainer->patrimonial_code)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_codigo_patrimonial','Código Patrimonial') !!}
 					{!! Form::text('search_codigo_patrimonial',null,['class'=>'form-control']) !!}
 				</div>
-			
+				@endif
+				
+				@if($dataContainer->serial_number)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_numero_serie','Número de serie') !!}
 					{!! Form::text('search_numero_serie',null,['class'=>'form-control']) !!}
 				</div>
-			
+				@endif
+
+				@if($dataContainer->model)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_modelo','Modelo') !!}
 					{!! Form::text('search_modelo',null,['class'=>'form-control']) !!}
 				</div>
+				@endif
 			</div>
 
 			<div class="row">
+				@if($dataContainer->group)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_grupo','Grupo') !!}
 					{!! Form::select('search_grupo', array(
@@ -42,7 +52,9 @@
 					'3' => 'GRUPO 3: EQUIPOS BIOMEDICOS DE APOYO AL DIAGNOSTICO E IMAGENOLOGIA',
 					'4' => 'GRUPO 4: EQUIPOS BIOMEDICOS DE LABORATORIO'),null,['class'=>'form-control chosen-select']) !!}
 				</div>
-			
+				@endif
+
+				@if($dataContainer->service)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_servicio','Servicio') !!}
 					{!! Form::select('search_servicio', array(
@@ -88,8 +100,11 @@
 					'39' => 'CIRUGIA NEONATAL'
 					),null,['class'=>'form-control chosen-select']) !!}
 				</div>
+				@endif
 			</div>
+			
 
+			@if($dataContainer->date)
 			<div class="row">						
 				<div class="form-group col-md-4">
 					{!! Form::label('search_fecha_ini','Fecha inicio *') !!}
@@ -110,6 +125,8 @@
 					</div>
 				</div>
 			</div>
+			@endif
+
 			<div class="col-md-12">
 				<div class="form-group col-md-2 col-md-offset-8">
 					

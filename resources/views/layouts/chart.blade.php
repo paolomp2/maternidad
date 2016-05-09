@@ -1,6 +1,6 @@
 <div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">{!!$data['chart_title'] or "GRAPHIC NO NAMED"!!}</h3>
+			<h3 class="panel-title">{!!$dataContainer->data_chart['chart_title'] or "GRAPHIC NO NAMED"!!}</h3>
 		</div>
 		<div class="panel-body" width="250px">
 			

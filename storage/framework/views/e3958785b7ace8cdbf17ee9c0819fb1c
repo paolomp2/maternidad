@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, follow">
-<title><?php echo isset($data['page_name']) ? $data['page_name'] : "GTS"; ?></title>
+<title><?php echo isset($dataContainer->page_name) ? $dataContainer->page_name : "GTS"; ?></title>
 
 
 <link rel="shortcut icon" href="<?php echo e(asset('img')); ?>/logo_gts.png">
@@ -58,11 +58,14 @@
 <!--SELECTS Javascritp-->
 <script src="<?php echo e(asset('js/chosen.jquery.js')); ?>"></script>
 
-<?php if($data['chart']=='true'): ?>
-
-	<?php if($data['chart_model']=='execute.time.1'): ?>
+<?php if($dataContainer->chart): ?>
+	<?php if($dataContainer->chart_model=='execute.time.1'): ?>
 	<script src="<?php echo e(asset('js/execute/time/1.js')); ?>"></script>
 	<?php endif; ?>
+<?php endif; ?>
 
+<?php if($dataContainer->table==true): ?>
+  <?php echo Html::script('js/data_tables/jquery.dataTables.js'); ?>
 
+  <?php echo Html::script('js/data_tables/script_table.js'); ?>  
 <?php endif; ?>
