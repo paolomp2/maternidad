@@ -28,7 +28,14 @@
 			<h3 class="panel-title">Detalle</h3>
 		</div>
 		<div class="panel-body">
-			<?php   $nombresServicios = $data_chart['nombresServicios'];?>									
+			<?php   $nombresServicios = $data_chart['nombresServicios'];
+                                $idCorrectivos=$data_chart['idCorrectivos'];
+                                $nombreCorrectivos = $data_chart['nombreCorrectivos'];
+                                $correctivos = $data_chart['correctivos'];
+                                $idPreventivos = $data_chart['idPreventivos'];
+                                $nombrePreventivos = $data_chart['nombrePreventivos'];
+                                $preventivos = $data_chart['preventivos'];
+                        ?>									
                                 
 			<div class="col-lg-12">
 				<div class="col-lg-2">

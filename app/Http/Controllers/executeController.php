@@ -1196,7 +1196,7 @@ class executeController extends Controller
         $count_month=array();//d'ias de un mes
                 
         $otCorrectivos=null;
-        $OtPreventivos=null;
+        $otPreventivos=null;
 
         $services_aux = Servicio::all();
         $i=0;
@@ -1207,48 +1207,79 @@ class executeController extends Controller
         }
         
         $data_chart['nombresServicios'] = $nombresServicios;
-        $data_chart['idServicios'] = $idServicios;
+        $data_chart['idServicios'] = $idServicios;                
         
-        while($date_start_c<$date_end_c) {
+        echo " fecha de inicio ".$date_start_c;
+        echo " fecha de fin ".$date_end_c;
+        
+        //while($date_start_c<$date_end_c) {
             
             $data_chart['num_months']++;
             //$data_procces[$data_chart['num_months']]=null;
 
             //Preparing 
+            
             $end_current_month = $date_start_c->copy()->endOfMonth();
+            echo "fin de mes: ".$end_current_month."<br>";
             //cantidad de dias de mes
             $count_month[$data_chart['num_months']]=$end_current_month->day;
 
             $otCorrectivos = DB::table('servicios')
-                             ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as correctivo')))
                              ->leftJoin('ot_correctivos', function($join){
                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');                                  
                                  })
-                                ->where('ot_correctivos.created_at','>=', $end_current_month)                                
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();                        
             
-            $OtPreventivos = DB::table('servicios')
-                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+            $otPreventivos = DB::table('servicios')
+                             ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as preventivo')))
                              ->leftJoin('ot_preventivos', function($join) {
                                      $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');                                  
                                  })
-                                ->where('ot_preventivos.created_at','>=', $end_current_month)                                
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)                               
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
             
+            $idPreventivos = array();
+            $nombrePreventivos = array();
+            $preventivos = array();
+            echo "numero de meses ";  
+            $i=0;
+            foreach ($otCorrectivos as $o) {
+                $i++;
+                $idCorrectivos[$i]=$o->idservicio;
+                $nombreCorrectivos[$i]=$o->nombre;
+                $correctivos[$i]=$o->correctivo;
+                //echo " ".$o->idservicio." ".$o->nombre. " ".$o->correctivo."<br>";
+            }
+            $i=0;
+            foreach ($otPreventivos as $o) {
+                $i++;
+                $idPreventivos[$i]=$o->idservicio;
+                $nombrePreventivos[$i]=$o->nombre;
+                $preventivos[$i]=$o->preventivo;                
+                //echo " ".$o->idservicio." ".$o->nombre. " ".$o->preventivo."<br>";
+            }
             
-                        foreach ($otCorrectivos as $o) {
-                            echo " ".$o->nombre. " ".$o->Correctivo;
-                        }
-            $ots_array[0]=$otCorrectivos;
-            $ots_array[1]=$OtPreventivos;            
+            $data_chart['idCorrectivos']=$idCorrectivos;
+            $data_chart['nombreCorrectivos']=$nombreCorrectivos;
+            $data_chart['correctivos']=$correctivos;
+            $data_chart['idPreventivos']=$idPreventivos;
+            $data_chart['nombrePreventivos']=$nombrePreventivos;
+            $data_chart['preventivos']=$preventivos;
+                    
+            //$ots_array[0]=$otCorrectivos;
+            //$ots_array[1]=$otPreventivos;            
             $date_start_c->addMonth();
-        }
-
-        //print_r($ots_array);
+        //}
+        echo " ots ";
+        print_r($ots_array);
         
         $data=[
             'page_name' => "Número de OTM generados",//nombre de la p'agina
