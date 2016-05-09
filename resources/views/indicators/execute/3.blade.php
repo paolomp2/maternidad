@@ -11,17 +11,8 @@
 	{!! Form::hidden('num_months', $data_chart['num_months'], ['id'=>'num_months']) !!}	
 	{!! Form::hidden('year_beg', $data_chart['year_beg'], ['id'=>'year_beg']) !!}
 	{!! Form::hidden('year_end', $data_chart['year_end'], ['id'=>'year_end']) !!}
-<<<<<<< HEAD
 	{!! Form::hidden('month_beg', $data_chart['month_beg'], ['id'=>'month_beg']) !!}
 	{!! Form::hidden('month_end', $data_chart['month_end'], ['id'=>'month_end']) !!}
-=======
-	{!! Form::hidden('month_beg', $data_chart['month_beg']-1, ['id'=>'month_beg']) !!}
-	{!! Form::hidden('month_end', $data_chart['month_end']-1, ['id'=>'month_end']) !!}
-
-	@for($i=0;$i<$data_chart['num_months'];$i++)
-
-	@endfor
->>>>>>> b8c0726793d64e53b3670b96e7dc5c49abf79e67
 	@endif
 	<!-- FIN DE DATOS PARA EL CHART -->
     <div class="col-lg-12">
@@ -79,13 +70,13 @@
 					<tr class="info">
 						<th>Horas/mes</th>
 						<th>Mes-Año</th>
-						<th>Tiempo Medio de SOT</th>
+						<th>Porcentaje</th>
 					</tr>
 					@for ($j = 0; $j < $data_chart['num_months']; $j++)
 					<tr>
 						<td>{!!$data_package->hours[$j][$i]!!}{!!" hrs"!!}</td>
 						<td>{!!$months[$ind_month]!!}{!!"-"!!}{!!$year!!}</td>
-						<td>{!!$data_package->percentage[$j][$i]!!}</td>
+						<td>{!!$data_package->percentage[$j][$i]!!}{!!"%"!!}</td>
 					</tr>
 					<?php $ind_month++;
 						if ($ind_month==12) {

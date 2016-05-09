@@ -11,8 +11,8 @@
 	{!! Form::hidden('num_months', $data_chart['num_months'], ['id'=>'num_months']) !!}	
 	{!! Form::hidden('year_beg', $data_chart['year_beg'], ['id'=>'year_beg']) !!}
 	{!! Form::hidden('year_end', $data_chart['year_end'], ['id'=>'year_end']) !!}
-	{!! Form::hidden('month_beg', $data_chart['month_beg']-1, ['id'=>'month_beg']) !!}
-	{!! Form::hidden('month_end', $data_chart['month_end']-1, ['id'=>'month_end']) !!}
+	{!! Form::hidden('month_beg', $data_chart['month_beg'], ['id'=>'month_beg']) !!}
+	{!! Form::hidden('month_end', $data_chart['month_end'], ['id'=>'month_end']) !!}
 
 	@for($i=0;$i<$data_chart['num_months'];$i++)
 
