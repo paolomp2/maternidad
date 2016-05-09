@@ -3,8 +3,8 @@
 <div class="row">
 	
 	<!-- DATOS PARA EL CHART -->
-	<?php if($data['chart']=='true'): ?>
-	<?php $data_chart = $data['data_chart'] ?>
+	<?php if($dataContainer->chart==true): ?>
+	<?php $data_chart = $dataContainer->data_chart ?>
 	<?php echo Form::hidden('labels', $data_chart['labels'], ['id'=>'labels']); ?>
 
 	<?php echo Form::hidden('num_months', $data_chart['num_months'], ['id'=>'num_months']); ?>	
@@ -16,29 +16,23 @@
 
 	<?php echo Form::hidden('month_end', $data_chart['month_end'], ['id'=>'month_end']); ?>
 
-
-	<?php for($i=0;$i<$data_chart['num_months'];$i++): ?>
-
-	<?php endfor; ?>
 	<?php endif; ?>
 	<!-- FIN DE DATOS PARA EL CHART -->
     <div class="col-lg-12">
-        <h3 class="page-header"><?php echo isset($data['report_name']) ? $data['report_name'] : "No Name detected"; ?></h3>            
+        <h3 class="page-header"><?php echo isset($dataContainer->report_name) ? $dataContainer->report_name : "No Name detected"; ?></h3>            
     </div>    
 </div>
 <?php echo $__env->make('layouts.date_range', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
-<?php if($data['chart']=='true'): ?>
+<?php if($dataContainer->chart==true): ?>
 	<?php echo $__env->make('layouts.chart', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">Detalle</h3>
 		</div>
 		<div class="panel-body">
-			<?php 	$labels = json_decode($data['data_chart']['labels']);
-					$data_package = json_decode($data['data_chart']['data']);
+			<?php 	$labels = json_decode($data_chart['labels']);
+					$data_package = json_decode($data_chart['data']);
 					$i=0;
 					$aux = array();
 					foreach ($data_package->percentage as $percentage) {						

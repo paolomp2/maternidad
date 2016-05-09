@@ -11,9 +11,9 @@
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             @include('layouts.menu')
 
-            @if($data['siderbar_type']=='execute')
+            @if($dataContainer->siderbar_type=='execute')
                 @include('layouts.siderbar.execute')
-            @elseif($data['siderbar_type']=='assets')
+            @elseif($dataContainer->siderbar_type=='assets')
                 @include('layouts.siderbar.assets')
             @endif
         </nav>

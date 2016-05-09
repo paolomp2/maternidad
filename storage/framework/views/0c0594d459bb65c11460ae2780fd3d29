@@ -11,9 +11,9 @@
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <?php echo $__env->make('layouts.menu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
-            <?php if($data['siderbar_type']=='execute'): ?>
+            <?php if($dataContainer->siderbar_type=='execute'): ?>
                 <?php echo $__env->make('layouts.siderbar.execute', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-            <?php elseif($data['siderbar_type']=='assets'): ?>
+            <?php elseif($dataContainer->siderbar_type=='assets'): ?>
                 <?php echo $__env->make('layouts.siderbar.assets', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
             <?php endif; ?>
         </nav>

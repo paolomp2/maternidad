@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, follow">
-<title>{!!$data['page_name'] or "GTS"!!}</title>
+<title>{!!$dataContainer->page_name or "GTS"!!}</title>
 
 
 <link rel="shortcut icon" href="{{ asset('img')}}/logo_gts.png">
@@ -58,11 +58,13 @@
 <!--SELECTS Javascritp-->
 <script src="{{asset('js/chosen.jquery.js') }}"></script>
 
-@if($data['chart']=='true')
-
-	@if($data['chart_model']=='execute.time.1')
+@if($dataContainer->chart)
+	@if($dataContainer->chart_model=='execute.time.1')
 	<script src="{{asset('js/execute/time/1.js') }}"></script>
 	@endif
+@endif
 
-
+@if($dataContainer->table==true)
+  {!!Html::script('js/data_tables/jquery.dataTables.js')!!}
+  {!!Html::script('js/data_tables/script_table.js')!!}  
 @endif
