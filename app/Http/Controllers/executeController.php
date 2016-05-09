@@ -1203,14 +1203,13 @@ class executeController extends Controller
         foreach($services_aux as $s) {
             $i++;
             $nombresServicios[$i] = $s->nombre;
+            $idServicios[$i] = $s->idServicio;
         }
         
         $data_chart['nombresServicios'] = $nombresServicios;
-        //print_r($assets);
+        $data_chart['idServicios'] = $idServicios;
         
         while($date_start_c<$date_end_c) {
-            //echo "inicio: ". $date_start_c. " ";
-            //echo "fin: ". $date_end_c. " ";
             
             $data_chart['num_months']++;
             //$data_procces[$data_chart['num_months']]=null;
@@ -1221,7 +1220,7 @@ class executeController extends Controller
             $count_month[$data_chart['num_months']]=$end_current_month->day;
 
             $otCorrectivos = DB::table('servicios')
-                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
                              ->leftJoin('ot_correctivos', function($join){
                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');                                  
                                  })
@@ -1240,14 +1239,17 @@ class executeController extends Controller
                                 ->orderBy('servicios.nombre')
                                 ->get();
             
-            $ots_array[0]=$otCorrectivos;
-            $ots_array[1]=$OtPreventivos;
             
+                        foreach ($otCorrectivos as $o) {
+                            echo " ".$o->nombre. " ".$o->Correctivo;
+                        }
+            $ots_array[0]=$otCorrectivos;
+            $ots_array[1]=$OtPreventivos;            
             $date_start_c->addMonth();
         }
-        //echo " ots array ";
+
         //print_r($ots_array);
-        //echo " fin ots array ";
+        
         $data=[
             'page_name' => "Número de OTM generados",//nombre de la p'agina
             'siderbar_type' => "execute",//Tipo de siderbar que se requere desplegar
@@ -1259,8 +1261,6 @@ class executeController extends Controller
             'chart_title' => 'Número de OTM generados',
             'data_chart' => $data_chart,
         ];
-        //echo " data chart ";
-        //print_r($data_chart);
         
         return view('indicators.execute.6',compact('data'));
     }
