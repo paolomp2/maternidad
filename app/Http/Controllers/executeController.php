@@ -1063,7 +1063,7 @@ class executeController extends Controller
         $validator = Validator::make($request->all(),$this->getValidations(true));
 
         if ($validator->fails()) {
-            return redirect('disponibilidad')->withErrors($validator)->withInput();
+            return redirect('numero_otm_generados')->withErrors($validator)->withInput();
         }
 
         $fechamin = $request->search_fecha_ini;
@@ -1086,7 +1086,7 @@ class executeController extends Controller
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();                        
-
+        //ot_vmetrologicas
         $otPreventivos = DB::table('servicios')
                          ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as preventivo')))
                          ->leftJoin('ot_preventivos', function($join) {
@@ -1098,6 +1098,17 @@ class executeController extends Controller
                             ->orderBy('servicios.nombre')
                             ->get();
 
+        $otMetrologicas = DB::table('servicios')
+                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as metrologica')))
+                         ->leftJoin('ot_vmetrologicas', function($join) {
+                                 $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                            ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)                               
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();                    
+                             
         $services_aux = Servicio::all();
 
         $data = array();
@@ -1114,14 +1125,19 @@ class executeController extends Controller
                 }
             }
             $data[$i][3] = 0;
-            foreach($otPreventivos as $op) {
-                echo " ".$op->idservicio." = ".$s->idservicio."<br>";
+            foreach($otPreventivos as $op) {                
                 if ($op->idservicio==$s->idservicio) {                        
                     $data[$i][3] = $op->preventivo; //preventivo
                     break;
                 }
             }
-            $data[$i][4] = 0; //metrologicos
+            $data[$i][4] = 0;
+            foreach($otMetrologicas as $om) {                
+                if ($om->idservicio==$s->idservicio) {                        
+                    $data[$i][4] = $om->metrologica; //metrologicas
+                    break;
+                }
+            }
             $data[$i][5] = 0; //inspecciones
         }
                         
