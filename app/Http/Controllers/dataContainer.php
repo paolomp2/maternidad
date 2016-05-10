@@ -7,7 +7,7 @@ namespace Maternidad\Http\Controllers;
 */
 class dataContainer
 {
-	private $page_name="change name of this page, visit dataContainer";//nombre de la pagina
+    private $page_name="change name of this page, visit dataContainer";//nombre de la pagina
     private $siderbar_type = "";//Tipo de siderbar que se requere desplegar
     private $method = "method not defined, visit dataContainer";//Metodo que se esta ejecutando
     private $url_post = "url_post not define, visit dataContainer";//url post al que apunta el formulario de rangos de fecha
@@ -16,6 +16,7 @@ class dataContainer
     private $chart_model = "execute.time.1";
     private $chart_title = "Disponibilidad";
     private $data_chart = null;
+    private $data_table = array(); //datos de una tabla
 
     //Filter
     //

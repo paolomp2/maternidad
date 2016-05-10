@@ -7,7 +7,9 @@
     </div>    
 </div>
 @include('layouts.date_range')
-
+        <?php 
+            $data_table =$dataContainer->data_table;                                    
+        ?>
 	<div class="panel panel-default">
 
 		<div class="panel-heading">
@@ -19,43 +21,23 @@
 				<table id="list_table" class="table display">
 				  <thead>
 				    <tr>
-				      <th>Servicios clínicos</th>
-				      <th>Preventivos</th>
+				      <th>Servicios Clínicos</th>
 				      <th>Correctivos</th>
+				      <th>Preventivos</th>
 				      <th>Metrológicos</th>
 				      <th>Inspecciones</th>
 				    </tr>
 				  </thead>
 				  <tbody>
+                                    <?php foreach($data_table as $data) { ?>
 				    <tr>
-				      <th scope="row">Anatomía Patológica</th>
-				      <td>5</td>
-				      <td>7</td>
-				      <td>9</td>
-				      <td>6</td>            
+				      <th scope="row"><?php echo $data[1]; ?></th>
+				      <td><?php echo $data[2]; ?></td>
+				      <td><?php echo $data[3]; ?></td>
+				      <td><?php echo $data[4]; ?></td>
+				      <td><?php echo $data[5]; ?></td>            
 				    </tr>
-				    <tr>
-				      <th scope="row">Atención Inmediata</th>
-				      <td>5</td>
-				      <td>7</td>
-				      <td>9</td>
-				      <td>6</td>            
-				    </tr>
-				    <tr>
-				      <th scope="row">Banco de Leche</th>
-				      <td>5</td>
-				      <td>7</td>
-				      <td>9</td>
-				      <td>6</td>            
-				    </tr>
-				    <tr>
-				      <th scope="row">Banco de Sangre</th>
-				      <td>5</td>
-				      <td>7</td>
-				      <td>9</td>
-				      <td>6</td>            
-				    </tr>
-				                  
+                                    <?php } ?>				    				                  
 				  </tbody>
 				</table> 
 				<!-- FIN TABLA DEL INDICADOR -->
