@@ -1107,7 +1107,18 @@ class executeController extends Controller
                             ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)                               
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
-                            ->get();                    
+                            ->get();   
+                             
+        $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as inspeccion')))
+                         ->leftJoin('ot_vmetrologicas', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                               
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get(); 
                              
         $services_aux = Servicio::all();
 
@@ -1139,6 +1150,12 @@ class executeController extends Controller
                 }
             }
             $data[$i][5] = 0; //inspecciones
+            foreach($otInspecciones as $oi) {                
+                if ($oi->idservicio==$s->idservicio) {                        
+                    $data[$i][5] = $oi->inspeccion; //metrologicas
+                    break;
+                }
+            }
         }
                         
         $data_table=$data;
