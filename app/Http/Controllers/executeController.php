@@ -1111,7 +1111,7 @@ class executeController extends Controller
                              
         $otInspecciones = DB::table('servicios')
                          ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as inspeccion')))
-                         ->leftJoin('ot_vmetrologicas', function($join) {
+                         ->leftJoin('ot_inspec_equipos', function($join) {
                                  $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
                              })
                             ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
