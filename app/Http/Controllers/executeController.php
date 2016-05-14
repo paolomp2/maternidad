@@ -1169,60 +1169,57 @@ class executeController extends Controller
         /*Fecha de inicio y fecha fin*/
         $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
         $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
-        $data_chart=null;
-        $data_chart['year_beg']=$date_start_c->year;
-        $data_chart['year_end']=$date_end_c->year;
-        $data_chart['month_beg']=$date_start_c->month;
-        $data_chart['month_end']=$date_end_c->month;
-        //->toDateTimeString();
-        $data_chart['num_months']=0;
-        $data_procces=array();//Array que contiene la data a procesar
-        $id_assets=array();//contiene las ids de los activos
-        $name_assets=array();//contiene las ids de los activos
-        $count_month=array();//d'ias de un mes
-        
+      
+
         
         $otCorrectivos=null;
         $OtPreventivos=null;
-        while($date_start_c<$date_end_c)
-        {
-            echo $date_start_c;
-            echo $date_end_c;
-            $data_chart['num_months']++;
-            $data_procces[$data_chart['num_months']]=null;
-            //Preparing 
-            $end_current_month = $date_start_c->copy()->endOfMonth();
-            //cantidad de dias de mes
-            $count_month[$data_chart['num_months']]=$end_current_month->day;
+     
+            
             $otCorrectivos = DB::table('servicios')
-                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
                              ->leftJoin('ot_correctivos', function($join)
                                  {
                                      $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
                                   
                                  })
                                 ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
-                                ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
+                                ->where('ot_correctivos.fecha_termino_ejecucion','<=', $date_end_c)
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
               $OtPreventivos = DB::table('servicios')
-                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
                              ->leftJoin('ot_preventivos', function($join)
                                  {
                                      $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
                                   
                                  })
                                 ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
-                                ->where('ot_preventivos.fecha_termino_ejecucion','<=', $end_current_month)
+                                ->where('ot_preventivos.fecha_termino_ejecucion','<=', $date_end_c)
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
              $ots_array[0]=$otCorrectivos;
              $ots_array[1]=$OtPreventivos;
+
+
+            $data = array();
             
-            $date_start_c->addMonth();
-        }
+            $i=0;
+
+             foreach ($otCorrectivos as $ot) {
+                $i++;
+                $data[$i][1]=$ot->{'Nombre'};
+                $data[$i][2]=$ot->{'Correctivo'};
+                $data[$i][3]=0; 
+                $data[$i][4]=0; 
+                $data[$i][5]=0; 
+             }
+           
+         $data_table=$data;
+
+
 
         $dataContainer = new dataContainer;
         $dataContainer->page_name = "Indicador de ejecución";//nombre de la p'agin;
@@ -1230,8 +1227,10 @@ class executeController extends Controller
         $dataContainer->method="post";
         $dataContainer->url_post="numero_otm_acabados_rep";
         $dataContainer->report_name="Número de OTM acabados";
-
-        return view('indicators.execute.1',compact('dataContainer'));
+        $dataContainer->table=true;
+        $dataContainer->data_table=$data_table;
+        
+        return view('indicators.execute.6',compact('dataContainer'));
     }
 
     public function e_8_post(Request $request)
