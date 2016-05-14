@@ -1605,17 +1605,55 @@ class executeController extends Controller
         $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
         $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
         
-        $sot = DB::table('servicios')
+        $sotCorrectivos = DB::table('servicios')
                          ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as correctivo')))
                          ->leftJoin('ot_correctivos', function($join){
                                 $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');                                  
                              })
                             ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
                             ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                            ->where('ot_correctivos.idestado_ot','=', 9)           
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();                        
+        //ot_vmetrologicas
+        $sotPreventivos = DB::table('servicios')
+                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as preventivo')))
+                         ->leftJoin('ot_preventivos', function($join) {
+                                 $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                            ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                            ->where('ot_correctivos.idestado_ot','=', 9)  
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();
-        
+
+        $sotMetrologicas = DB::table('servicios')
+                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as metrologica')))
+                         ->leftJoin('ot_vmetrologicas', function($join) {
+                                 $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                            ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)   
+                            ->where('ot_correctivos.idestado_ot','=', 9)           
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();   
+                             
+        $sotInspecciones = DB::table('servicios')
+                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                               
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+                             
+                             
+        //idestado_ot=9 //ots pendientes
         $services_aux = Servicio::all();
         
         $dataContainer = new dataContainer;
