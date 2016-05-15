@@ -1300,7 +1300,7 @@ class executeController extends Controller
     }
 
     public function e_8_post(Request $request)//PENDIENTE
- {
+  {
   /*Validator section*/
      $validator = Validator::make($request->all(),$this->getValidations(true));
         if ($validator->fails()) {
@@ -1435,7 +1435,7 @@ class executeController extends Controller
         
         return view('indicators.execute.6',compact('dataContainer'));
 
-    }
+  }
 
     public function e_9_post(Request $request)
     {
@@ -1575,7 +1575,7 @@ class executeController extends Controller
         return view('indicators.execute.6',compact('dataContainer'));
     }
 
-    public function e_10_post(Request $request)
+    public function e_10_post(Request $request) //SOLICITUDES DE TRABAJO GENERADAS
     {
         /*Validator section*/
         $validator = Validator::make($request->all(),$this->getValidations(true));
@@ -1589,50 +1589,44 @@ class executeController extends Controller
         /*Fecha de inicio y fecha fin*/
         $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
         $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
-        $data_chart=null;
-        $data_chart['year_beg']=$date_start_c->year;
-        $data_chart['year_end']=$date_end_c->year;
-        $data_chart['month_beg']=$date_start_c->month;
-        $data_chart['month_end']=$date_end_c->month;
-        //->toDateTimeString();
-        $data_chart['num_months']=0;
-        $data_procces=array();//Array que contiene la data a procesar
-        $id_assets=array();//contiene las ids de los activos
-        $name_assets=array();//contiene las ids de los activos
-        $count_month=array();//d'ias de un mes
+   
         
         
         $otCorrectivos=null;
-        $OtPreventivos=null;
-        while($date_start_c<$date_end_c)
-        {
-            echo $date_start_c;
-            echo $date_end_c;
-            $data_chart['num_months']++;
-            $data_procces[$data_chart['num_months']]=null;
-            //Preparing 
-            $end_current_month = $date_start_c->copy()->endOfMonth();
-            //cantidad de dias de mes
-            $count_month[$data_chart['num_months']]=$end_current_month->day;
+        
+     
+           
             $otCorrectivos = DB::table('servicios')
-                             ->select(array('servicios.nombre', DB::raw('COUNT(ot_correctivos.idsolicitud_orden_trabajo) as ordenDeTrabajo')))
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idsolicitud_orden_trabajo) as ordenDeTrabajo')))
                              ->leftJoin('ot_correctivos', function($join)
                                  {
                                      $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
                                   
                                  })
                                 ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
-                                ->where('ot_correctivos.fecha_termino_ejecucion','<=', $end_current_month)
+                                ->where('ot_correctivos.fecha_termino_ejecucion','<=', $date_end_c)
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
-           
-            echo dd($otCorrectivos);
-             $ots_array[0]=$otCorrectivos;
-             $ots_array[1]=$OtPreventivos;
+
+         $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
             
-            $date_start_c->addMonth();
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] = $oc->{'ordenDeTrabajo'}; //correctivos
+                    break;
+                }
+            }
         }
+
+        $data_table=$data;
 
         $dataContainer = new dataContainer;
         $dataContainer->page_name = "Número de OTM generados";//nombre de la p'agin;
@@ -1640,8 +1634,13 @@ class executeController extends Controller
         $dataContainer->method="post";
         $dataContainer->url_post="solicitudes_de_trabajo_generados_rep";
         $dataContainer->report_name="Número de trabajos generados";
+        $dataContainer->chart=true;
+        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->chart_title='Número de OTM generados';
+        $dataContainer->data_table=$data_table;
+        
+        return view('indicators.execute.7',compact('dataContainer'));
 
-        return view('indicators.execute.6',compact('dataContainer'));
     }
 
     public function e_11_post(Request $request)
