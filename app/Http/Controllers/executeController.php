@@ -259,136 +259,173 @@ class executeController extends Controller
                         ->withErrors($validator)
                         ->withInput();
         }
-        $fechamin = $request->search_fecha_ini;
-        $fechamax = $request->search_fecha_fin;
+
+        //INICIALIZACION DE VARIABLES
         $codPatrimonio=null;
         $numSerie=null;
-        $modelo=null;
+
+        //DATOS OBTENIDOS POR REQUEST
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
         $codPatrimonio =$request->search_codigo_patrimonial;
         $numSerie= $request->search_numero_serie;
-        $modelo= $request->search_modelo;
         
+        //TRASNFORMACION DE LAS FECHAS
         $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
         $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
-        $data_chart=null;
-        $data_chart['year_beg']=$date_start_c->year;
-        $data_chart['year_end']=$date_end_c->year;
-        $data_chart['month_beg']=$date_start_c->month;
-        $data_chart['month_end']=$date_end_c->month;
-        //->toDateTimeString();
-        $data_chart['num_months']=0;
-        $data_procces=array();//Array que contiene la data a procesar
-        $id_assets=array();//contiene las ids de los activos
-        $name_assets=array();//contiene las ids de los activos
-        $count_month=array();//d'ias de un mes
         
-        $validaCodigoPatrimonio=null;
-        $validaNumeroSerie=null;
-        $validaCodigoModelo=null;
-         if($codPatrimonio != null){
-                 $validaCodigoPatrimonio = Activo::where('codigo_patrimonial', '=', $codPatrimonio)->first();
-                    
-         }elseif ($numSerie!=null) {
-                 $validaNumeroSerie = Activo::where('numero_serie', '=', $numSerie)->first();
-                    
-         }elseif ($modelo!=null) {
-                $validaCodigoModelo = Activo::where('idmodelo_equipo', '=', $modelo)->first();
-                    
-        }
-        
+        $anhoInicio =$date_start_c->year;
+        $mesInicio =$date_start_c->month;
+        $anhoFin=$date_end_c->year;
+        $mesFin=$date_end_c->month;
+
+        $label=array();
+
         $otCorrectivos=null;
-        $OtPreventivos=null;
+        $otPreventivos=null;
+
+        //$codigoPatrimonial="532269990015";
+        if($codPatrimonio!=null){
+            $label[0]=$codPatrimonio;
+                 $otCorrectivos = DB::table('ot_correctivos')
+                                     ->select(array(
+                                        DB::raw('YEAR(ot_correctivos.fecha_inicio_ejecucion) as Ahno'),
+                                        DB::raw('MONTH(ot_correctivos.fecha_inicio_ejecucion) as Mes'), 
+                                        DB::raw('SUM(ot_correctivos.tiempo_ejecucion) as Tiempo'), 
+                                        DB::raw('COUNT(ot_correctivos.idot_correctivo) as NumeroOt')))
+                                     ->leftJoin('activos', function($join)
+                                         {
+                                             $join->on('ot_correctivos.idactivo', '=', 'activos.idactivo');
+                                          
+                                         })
+                                        ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
+                                        ->where('ot_correctivos.fecha_termino_ejecucion','<=', $date_end_c)
+                                        ->where('activos.codigo_patrimonial','=',$codPatrimonio)
+                                        ->groupby('Ahno','Mes')
+                                        ->orderBy('Ahno', 'Mes') 
+                                        ->get();
+
+
+                $otPreventivos = DB::table('ot_preventivos')
+                                     ->select(array(
+                                        DB::raw('YEAR(ot_preventivos.fecha_inicio_ejecucion) as Ahno'),
+                                        DB::raw('MONTH(ot_preventivos.fecha_inicio_ejecucion) as Mes'), 
+                                        DB::raw('SUM(ot_preventivos.tiempo_ejecucion) as Tiempo'), 
+                                        DB::raw('COUNT(ot_preventivos.idot_preventivo) as NumeroOt')))
+                                     ->leftJoin('activos', function($join)
+                                         {
+                                             $join->on('ot_preventivos.idactivo', '=', 'activos.idactivo');
+                                          
+                                         })
+                                        ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
+                                        ->where('ot_preventivos.fecha_termino_ejecucion','<=', $date_end_c)
+                                        ->where('activos.codigo_patrimonial','=',$codPatrimonio)
+                                        ->groupby('Ahno','Mes')
+                                        ->orderBy('Ahno', 'Mes') 
+                                        ->get();
+        }
+        else{
+            $label[0]=$numSerie;
+                     $otCorrectivos = DB::table('ot_correctivos')
+                                     ->select(array(
+                                        DB::raw('YEAR(ot_correctivos.fecha_inicio_ejecucion) as Ahno'),
+                                        DB::raw('MONTH(ot_correctivos.fecha_inicio_ejecucion) as Mes'), 
+                                        DB::raw('SUM(ot_correctivos.tiempo_ejecucion) as Tiempo'), 
+                                        DB::raw('COUNT(ot_correctivos.idot_correctivo) as NumeroOt')))
+                                     ->leftJoin('activos', function($join)
+                                         {
+                                             $join->on('ot_correctivos.idactivo', '=', 'activos.idactivo');
+                                          
+                                         })
+                                        ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
+                                        ->where('ot_correctivos.fecha_termino_ejecucion','<=', $date_end_c)
+                                        ->where('activos.numero_serie','=',$numSerie)
+                                        ->groupby('Ahno','Mes')
+                                        ->orderBy('Ahno', 'Mes') 
+                                        ->get();
+
+
+                $otPreventivos = DB::table('ot_preventivos')
+                                     ->select(array(
+                                        DB::raw('YEAR(ot_preventivos.fecha_inicio_ejecucion) as Ahno'),
+                                        DB::raw('MONTH(ot_preventivos.fecha_inicio_ejecucion) as Mes'), 
+                                        DB::raw('SUM(ot_preventivos.tiempo_ejecucion) as Tiempo'), 
+                                        DB::raw('COUNT(ot_preventivos.idot_preventivo) as NumeroOt')))
+                                     ->leftJoin('activos', function($join)
+                                         {
+                                             $join->on('ot_preventivos.idactivo', '=', 'activos.idactivo');
+                                          
+                                         })
+                                        ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
+                                        ->where('ot_preventivos.fecha_termino_ejecucion','<=', $date_end_c)
+                                        ->where('activos.numero_serie','=',$numSerie)
+                                        ->groupby('Ahno','Mes')
+                                        ->orderBy('Ahno', 'Mes') 
+                                        ->get();
+
+        }      
+       //echo dd($otCorrectivos);
+
+        //PREPARACION DE ESTRUCTURA DE DATOS 
+        $data_chart['year_beg']=$anhoInicio;
+        $data_chart['year_end']=$anhoFin;
+        $data_chart['month_beg']=$mesInicio;
+        $data_chart['month_end']=$mesFin;
+        
+        /*if($anhoFin==$anhoInicio){
+            $data_chart['num_months']=$mesFin-$mesInicio+1;
+        }
+        else{
+            if($anhoFin-$anhoInicio==1){
+                $data_chart['num_months']=13-$mesInicio+$mesFin;
+            }else{
+               $veces=$anhoFin-$anhoInicio+1; 
+               $data_chart['num_months'] =12*$veces + 13-$mesInicio+$mesFin;
+            }
+        }*/
+
+        
+        $data_chart['labels']=json_encode($label);
+        $numeroMes=0;
         while($date_start_c<$date_end_c)
-        {
-            $data_chart['num_months']++;
-            $data_procces[$data_chart['num_months']]=null;
-            //Preparing 
+        {   
+            $numeroMes++;
+            $mesTemp=$date_start_c->month;
+            $anhoTemp=$date_start_c->year;
+
             $end_current_month = $date_start_c->copy()->endOfMonth();
             //cantidad de dias de mes
-            $count_month[$data_chart['num_months']]=$end_current_month->day;
-            
-                    if($validaCodigoPatrimonio != null){
-                             $otCorrectivos = OtCorrectivo::withTrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->where('idactivo','=',$validaCodigoPatrimonio->idactivo)->orderBy('idot_correctivo', 'DESC')->get();
-                             $OtPreventivos = OtPreventivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->where('idactivo','=',$validaCodigoPatrimonio->idactivo)->orderBy('idot_preventivo', 'DESC')->get();       
-                             
-                    }
-                    elseif ($validaNumeroSerie!=null) {
-                             $otCorrectivos = OtCorrectivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->where('idactivo','=',$validaNumeroSerie->idactivo)->orderBy('idot_correctivo', 'DESC')->get();
-                             $OtPreventivos = OtPreventivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->where('idactivo','=',$validaNumeroSerie->idactivo)->orderBy('idot_preventivo', 'DESC')->get();       
-                            
-                            
-                    }elseif ($validaCodigoModelo!=null) {
-                             $otCorrectivos = OtCorrectivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->where('idactivo','=',$validaCodigoModelo->idactivo)->orderBy('idot_correctivo', 'DESC')->get();
-                             $OtPreventivos = OtPreventivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->where('idactivo','=',$validaCodigoModelo->idactivo)->orderBy('idot_preventivo', 'DESC')->get();       
-                                
-                            
-                    }
-                    else{
-                            $otCorrectivos = OtCorrectivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->orderBy('idot_correctivo', 'DESC')->get();
-                            $OtPreventivos = OtPreventivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->orderBy('idot_preventivo', 'DESC')->get();       
-                            $OtPreventivos = OtPreventivo::withtrashed()->where('fecha_inicio_ejecucion','>=',$date_start_c)->where('fecha_termino_ejecucion','<=',$end_current_month)->orderBy('idot_preventivo', 'DESC')->get();   
-                    }
-          
-                $ots_array[0]=$otCorrectivos;
-                $ots_array[1]=$OtPreventivos;
-                if($otCorrectivos!=null || $OtPreventivos!=null){
-                    foreach ($ots_array as $ots_collection) {
-                        $last_id_assets = -1;//Activo
-                        $ind_activos=-1;//Indice de activos para el array de datos 
-                        foreach ($ots_collection as $current_ot)
-                        {
-                            if ($last_id_assets!=$current_ot->idactivo) {
-                                
-                                for ($ind_activos=0; $ind_activos < count($id_assets) ; $ind_activos++) { 
-                                    if($id_assets[$ind_activos]==$current_ot->idactivo)
-                                        break;
-                                }
-                                if($ind_activos==count($id_assets)){
-                                    $id_assets[$ind_activos] = $current_ot->idactivo;
-                                    $name_assets[$ind_activos] = Activo::find($current_ot->idactivo)->codigo_patrimonial;
-                                }                      
-                                $last_id_assets=$current_ot->idactivo;
-                                $data_procces[$data_chart['num_months']][$ind_activos]['id']=$current_ot->idactivo;
-                                $data_procces[$data_chart['num_months']][$ind_activos]['minutes']=0;//Inicializando en cero
-                                                
-                            }
-                            $ot_star = Carbon::createFromFormat('Y-m-d H:i:s', $current_ot->fecha_inicio_ejecucion);                                
-                            $ot_end = Carbon::createFromFormat('Y-m-d H:i:s', $current_ot->fecha_termino_ejecucion);
-                            $data_procces[$data_chart['num_months']][$ind_activos]['minutes']+=$ot_star->diffInMinutes($ot_end);                           
-                        }
-                    }
-                     $date_start_c->addMonth();
-                }
-            //Adding months
            
-        }
-         
-         
-         $data_chart['labels']=json_encode($name_assets);
-        $data_chart['data']['percentage']=[];
-        for ($i=1; $i <= $data_chart['num_months'] ; $i++) { 
-            if (!is_null($data_procces[$i])) {
-                for ($j=0; $j < count($id_assets) ; $j++) {
-                    if(array_key_exists($j,$data_procces[$i]))
-                    {
-                        $data_chart['data']['percentage'][$i][$j]=($data_procces[$i][$j]['minutes']/($count_month[$i]*1440))*100;
-                        $data_chart['data']['hours'][$i][$j]= $count_month[$i]-$data_chart['data']['percentage'][$i][$j]*($count_month[$i]*24/100);
-                    }else{
-                        $data_chart['data']['percentage'][$i][$j]=0;
-                        $data_chart['data']['hours'][$i][$j]=0;
-                    }                    
-                }
-            }else{
-                for ($j=0; $j < count($id_assets) ; $j++) {
-                    $data_chart['data']['percentage'][$i][$j]=0;
-                    $data_chart['data']['hours'][$i][$j]=0;
+            //INICIALIZACION   
+            $data_chart['data']['percentage'][$numeroMes][0]=0;
+            $data_chart['data']['hours'][$numeroMes][0]=0;
+
+            foreach ($otCorrectivos as $oc) {
+                if(($mesTemp==$oc->{'Mes'}) && ($anhoTemp==$oc->{'Ahno'})){
+                    $data_chart['data']['hours'][$numeroMes][0]=$data_chart['data']['hours'][$numeroMes][0]+ ($oc->{'Tiempo'})/60;                    
+                    $data_chart['data']['percentage'][$numeroMes][0]= $data_chart['data']['hours'][$numeroMes][0]*100/($end_current_month->day*24);
                 }
             }
+
+            foreach ($otPreventivos as $op) {
+                if(($mesTemp==$op->{'Mes'}) && ($anhoTemp==$op->{'Ahno'})){
+                    $data_chart['data']['hours'][$numeroMes][0]=$data_chart['data']['hours'][$numeroMes][0]+($op->{'Tiempo'})/60;                    
+                    $data_chart['data']['percentage'][$numeroMes][0]= $data_chart['data']['hours'][$numeroMes][0]*100/($end_current_month->day*24);
+                }
+            }
+
+
+            $date_start_c->addMonth();
         }
         
-        $data_chart['data']=json_encode($data_chart['data']);
-        //echo dd($data_chart);
+
+        $data_chart['num_months']=$numeroMes;
         
+
+        $data_chart['data']=json_encode($data_chart['data']);
+
+        
+
         $dataContainer = new dataContainer;
         $dataContainer->page_name = "Indicador de ejecución";//nombre de la p'agin;
         $dataContainer->siderbar_type ="execute";//Tipo de siderbar que se requere desplega;
@@ -401,8 +438,9 @@ class executeController extends Controller
         $dataContainer->chart_model='execute.time.1';
         $dataContainer->chart_title='Disponibilidad';
         $dataContainer->data_chart=$data_chart;
-
+        
         return view('indicators.execute.1',compact('dataContainer'));
+
     }
 
 
@@ -710,8 +748,12 @@ class executeController extends Controller
                 }
             }
         }
+
+        
         
         $data_chart['data']=json_encode($data_chart['data']); 
+
+        echo dd($data_chart);
 
         $dataContainer = new dataContainer;
         $dataContainer->page_name = "Indicador de ejecución";//nombre de la p'agin;
