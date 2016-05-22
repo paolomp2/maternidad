@@ -37,7 +37,7 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::get('proveedores', 'HomeController@providers');
 
 	//execution routes
-	//time indicators
+	//TIME INDICATORS
 	
 	//1
 	Route::get('disponibilidad', 'executeController@e_1');
@@ -94,7 +94,7 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::get('tiempo_medio_de_resolución_de_otm', 'executeController@e_18');
 	Route::post('tiempo_medio_de_resolución_de_otm_rep', 'executeController@e_18_post');
 
-	//INDICADORES DE COSTO
+	//COST INDICATORS
 	Route::get('costo_mano_de_obra', 'executeController@c_1');
 	Route::post('costo_mano_de_obra_rep', 'executeController@c_1_post');
 
@@ -109,6 +109,25 @@ Route::group(['middleware' => 'otTimes'], function () {
 
 	Route::get('costo_actual_de_equipo', 'executeController@c_5');
 	Route::post('costo_actual_de_equipo_rep', 'executeController@c_5_post');
+
+	//REQUEST INDICATORSS
+	Route::get('tipo_de_requerimiento','requestController@r_1');
+	Route::post('tipo_de_requerimiento_rep','requestController@r_1_post');
+
+	Route::get('eficiencia_de_cumplimiento_de_pedido','requestController@r_2');
+	Route::post('eficiencia_de_cumplimiento_de_pedido_rep','requestController@r_2_post');
+
+	Route::get('tiempo_promedio_de_compra','requestController@r_3');
+	Route::post('tiempo_promedio_de_compra_rep','requestController@r_3');
+
+	Route::get('diferencia_porcentual_entre_estimaciones_de_consumo_y_consumo_real','requestController@r_4');
+	Route::post('diferencia_porcentual_entre_estimaciones_de_consumo_y_consumo_real_rep','requestController@r_4_post');
+
+	Route::get('porcentaje_de_servicios_que_experimentaron_desabastecimiento','requestController@r_5');
+	Route::post('porcentaje_de_servicios_que_experimentaron_desabastecimiento_rep','requestController@r_5_post');
+
+	Route::get('porcentaje_de_error_absoluto_medido_entre_consumo_estimado_y_consumo_real','requestController@r_6');
+	Route::post('porcentaje_de_error_absoluto_medido_entre_consumo_estimado_y_consumo_real_rep','requestController@r_6_post');
 
 
 
