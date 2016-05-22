@@ -270,11 +270,11 @@ class executeController extends Controller
     public function c_2()
     {
         $dataContainer = new dataContainer;
-        $dataContainer->page_name = "Costo de hora de Mano de Obra";//nombre de la p'agin;
+        $dataContainer->page_name = "Costo por Hora de Mano de Obra";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="get";
         $dataContainer->url_post="costo_hora_mano_de_obra_rep";
-        $dataContainer->report_name="Costo de hora de Mano de Obra";
+        $dataContainer->report_name="Costo por Hora de Mano de Obra";
         $dataContainer->serial_number=false;
         $dataContainer->patrimonial_code=false;
 
@@ -304,7 +304,7 @@ class executeController extends Controller
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="get";
         $dataContainer->url_post="indice_de_emergencia_rep";
-        $dataContainer->report_name="indice de Emergencia";
+        $dataContainer->report_name="Indice de Emergencia";
         $dataContainer->serial_number=false;
         $dataContainer->patrimonial_code=false;
 
@@ -3433,6 +3433,99 @@ class executeController extends Controller
         $dataContainer->chart=true;
         $dataContainer->chart_model='execute.time.1';
         $dataContainer->chart_title='Tiempo Medio de Resolución de OTM';
+        $dataContainer->data_table=$data_table;
+
+        return view('indicators.execute.6',compact('dataContainer'));
+    }
+
+
+    /***********************************INDICADORES DE COSTOS********************************************/
+    public function c_1_post(Request $request)
+    {
+        
+        $data_table=$data;
+
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo de Mano de Obra";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_mano_de_obra_rep";
+        $dataContainer->report_name="Costo de Mano de Obra";
+        $dataContainer->chart=true;
+        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->chart_title='Costo de Mano de Obra';
+        $dataContainer->data_table=$data_table;
+
+        return view('indicators.execute.6',compact('dataContainer'));
+    }
+
+    public function c_2_post(Request $request)
+    {
+         $data_table=$data;
+
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo por hora de Mano de Obra";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_hora_mano_de_obra_rep";
+        $dataContainer->report_name="Costo de hora de Mano de Obra";
+        $dataContainer->chart=true;
+        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->chart_title='Costo por Hora de Obra';
+        $dataContainer->data_table=$data_table;
+        
+
+        return view('indicators.execute.6',compact('dataContainer'));
+    }
+
+    public function c_3_post(Request $request)
+    {
+
+        $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo de Mantenimiento";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_mantenimiento_rep";
+        $dataContainer->report_name="Costo de Mantenimiento";
+        $dataContainer->chart=true;
+        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->chart_title='Costo de Mantenimiento';
+        $dataContainer->data_table=$data_table;
+       
+        return view('indicators.execute.6',compact('dataContainer'));
+    }
+
+    public function c_4_post(Request $request)
+    {
+        $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Indice de Emergencia";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="indice_de_emergencia_rep";
+        $dataContainer->report_name="Indice de Emergencia";
+        $dataContainer->chart=true;
+        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->chart_title='Indice de Emergencia';
+        $dataContainer->data_table=$data_table;
+       
+
+        return view('indicators.execute.6',compact('dataContainer'));
+    }
+
+    public function c_5_post(Request $request)
+    {
+        $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo Actual de Equipo";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_actual_de_equipo_rep";
+        $dataContainer->report_name="Costo Actual de Equipo";
+        $dataContainer->chart=true;
+        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->chart_title='Costo Actual de Equipo';
         $dataContainer->data_table=$data_table;
 
         return view('indicators.execute.6',compact('dataContainer'));
