@@ -2,7 +2,7 @@
     <div class="sidebar-nav navbar-collapse">
         <ul class="nav" id="side-menu">
             <li>
-                <a href="#">Indicadores de Costo<span class="fa arrow"></span></a>
+                <a href="#">Indicadores de Tiempo<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li><?php echo link_to('/disponibilidad', $title ='Disponibilidad', $attributes = [], $secure = null); ?></li>
                         <li><?php echo link_to('/disponibilidad_total', $title ='Disponibilidad total', $attributes = [], $secure = null); ?></li>
@@ -25,10 +25,13 @@
                     </ul>
             </li>
             <li>
-                <a href="#">Indicadores de Tiempo<span class="fa arrow"></span></a>
+                <a href="#">Indicadores de Costo<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level"> 
-                        <li>
-                        </li>                        
+                          <li><?php echo link_to('/costo_mano_de_obra', $title ='Costo de Mano de Obra', $attributes = [], $secure = null); ?></li>
+                        <li><?php echo link_to('/costo_hora_mano_de_obra', $title ='Costo por Hora Mano de Obra', $attributes = [], $secure = null); ?></li>
+                        <li><?php echo link_to('/costo_mantenimiento', $title ='Costo Mantenimiento', $attributes = [], $secure = null); ?></li>
+                        <li><?php echo link_to('/indice_de_emergencia', $title ='Indice de Emergencia', $attributes = [], $secure = null); ?></li>
+                        <li><?php echo link_to('/costo_actual_de_equipo', $title ='Costo Actual de Equipo', $attributes = [], $secure = null); ?></li>                      
                     </ul>
             </li>                       
         </ul>
