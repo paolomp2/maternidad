@@ -252,6 +252,119 @@ class executeController extends Controller
         return view('indicators.execute.1',compact('dataContainer'));
     }
 
+    public function c_1()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo de Mano de Obra";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="get";
+        $dataContainer->url_post="costo_mano_de_obra_rep";
+        $dataContainer->report_name="Costo de Mano de Obra";
+        $dataContainer->serial_number=false;
+        $dataContainer->patrimonial_code=false;
+
+        return view('indicators.execute.1',compact('dataContainer'));
+
+    }
+
+    public function c_2()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo por Hora de Mano de Obra";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="get";
+        $dataContainer->url_post="costo_hora_mano_de_obra_rep";
+        $dataContainer->report_name="Costo por Hora de Mano de Obra";
+        $dataContainer->serial_number=false;
+        $dataContainer->patrimonial_code=false;
+
+        return view('indicators.execute.1',compact('dataContainer'));
+
+    }
+
+    public function c_3()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo de Mantenimiento";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="get";
+        $dataContainer->url_post="costo_mantenimiento_rep";
+        $dataContainer->report_name="Costo de Mantenimiento";
+        $dataContainer->serial_number=false;
+        $dataContainer->patrimonial_code=false;
+
+        return view('indicators.execute.1',compact('dataContainer'));
+
+    }
+
+    public function c_4()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Indice de Emergencia";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="get";
+        $dataContainer->url_post="indice_de_emergencia_rep";
+        $dataContainer->report_name="Indice de Emergencia";
+        $dataContainer->serial_number=false;
+        $dataContainer->patrimonial_code=false;
+
+        return view('indicators.execute.1',compact('dataContainer'));
+
+    }
+
+    public function c_5()
+    {
+
+        $activosD = DB::table('modelo_activos')
+                             ->select(array('activos.codigo_patrimonial as Patrimonio', 
+                                'familia_activos.nombre_equipo as Equipo',
+                                DB::raw('YEAR(activos.anho_adquisicion) as Adquisicion'),
+                                DB::raw('YEAR(NOW()) as Actual'),
+                                'activos.costo as Costo',
+                                'activos.depreciacion as Depreciacion'
+                                ))
+                             ->Rightjoin('activos', function($join)
+                                 {
+                                     $join->on('modelo_activos.idmodelo_equipo', '=', 'activos.idmodelo_equipo');
+                                  
+                                 })
+                             ->leftJoin('familia_activos', function($join)
+                                 {
+                                     $join->on('modelo_activos.idfamilia_activo', '=', 'familia_activos.idfamilia_activo');
+                                  
+                                 })
+                             ->groupby('Patrimonio')
+                             ->orderBy('Patrimonio')
+                             ->get();
+
+         //echo dd($activosD);
+        $i=0;
+        $data =array();
+
+
+        foreach ($activosD as $act) {
+            $i++;
+            $data[$i][1]=$act->{'Patrimonio'};
+            $data[$i][2]=$act->{'Equipo'};
+            $data[$i][3]=$act->{'Costo'} -($act->{'Actual'}-($act->{'Adquisicion'})+1)*$act->{'Depreciacion'};
+        }
+
+        $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo de Actual del Equipo";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="get";
+        $dataContainer->url_post="costo_actual_de_equipo_rep";
+        $dataContainer->report_name="Costo de Actual del Equipo";
+        $dataContainer->date=false;
+        $dataContainer->serial_number=false;
+        $dataContainer->patrimonial_code=false;
+        $dataContainer->data_table=$data_table;
+
+        return view('indicators.execute.16',compact('dataContainer'));
+
+    }
+
     public function e_1_post(Request $request)
     {
         /*Validator section*/
@@ -444,7 +557,6 @@ class executeController extends Controller
         return view('indicators.execute.1',compact('dataContainer'));
 
     }
-
 
     public function e_2_post(Request $request)
     {
@@ -639,8 +751,6 @@ class executeController extends Controller
 
         return view('indicators.execute.10',compact('dataContainer'));        
     }
-
-
 
     public function e_3_post(Request $request)
     {
@@ -840,7 +950,7 @@ class executeController extends Controller
 
     public function e_4_post(Request $request)
     {
-              /*Validator section*/
+     /*Validator section*/
          $validator = Validator::make($request->all(),$this->getValidations(true));
         if ($validator->fails()) {
             return redirect('disponibilidad')
@@ -1042,7 +1152,7 @@ class executeController extends Controller
 
     public function e_5_post(Request $request)
     {
-           /*Validator section*/
+        /*Validator section*/
          $validator = Validator::make($request->all(),$this->getValidations(true));
         if ($validator->fails()) {
             return redirect('disponibilidad')
@@ -1256,45 +1366,47 @@ class executeController extends Controller
         $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();                                 
 
         $otCorrectivos = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as correctivo')))
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
                          ->leftJoin('ot_correctivos', function($join){
                                 $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');                                  
                              })
-                            ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
-                            ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                            ->where('ot_correctivos.created_at','>=', $date_start_c)
+                            ->where('ot_correctivos.created_at','<=', $date_end_c)
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
-                            ->get();                        
-        //ot_vmetrologicas
+                            ->get();     
+
+                          
+        
         $otPreventivos = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as preventivo')))
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
                          ->leftJoin('ot_preventivos', function($join) {
                                  $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');                                  
                              })
-                            ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
-                            ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)                               
+                            ->where('ot_preventivos.created_at','>=', $date_start_c)
+                            ->where('ot_preventivos.created_at','<=', $date_end_c)                               
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();
 
         $otMetrologicas = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as metrologica')))
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica')))
                          ->leftJoin('ot_vmetrologicas', function($join) {
                                  $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');                                  
                              })
-                            ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
-                            ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)                               
+                            ->where('ot_vmetrologicas.created_at','>=', $date_start_c)
+                            ->where('ot_vmetrologicas.created_at','<=', $date_end_c)                               
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();   
                              
         $otInspecciones = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as inspeccion')))
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
                          ->leftJoin('ot_inspec_equipos', function($join) {
                                  $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
                              })
-                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
-                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                               
+                            ->where('ot_inspec_equipos.created_at','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.created_at','<=', $date_end_c)                               
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get(); 
@@ -1309,29 +1421,29 @@ class executeController extends Controller
             $data[$i][1] = $s->nombre; //nombreServicios
             $data[$i][2] = 0;
             foreach($otCorrectivos as $oc) {                    
-                if ($oc->idservicio==$s->idservicio) {
-                    $data[$i][2] = $oc->correctivo; //correctivos
+                if ($oc->{'Nombre'}==$s->nombre) {
+                    $data[$i][2] = $oc->{'Correctivo'}; //correctivos
                     break;
                 }
             }
             $data[$i][3] = 0;
             foreach($otPreventivos as $op) {                
-                if ($op->idservicio==$s->idservicio) {                        
-                    $data[$i][3] = $op->preventivo; //preventivo
+                if ($op->{'Nombre'}==$s->nombre) {                        
+                    $data[$i][3] = $op->{'Preventivo'}; //preventivo
                     break;
                 }
             }
             $data[$i][4] = 0;
             foreach($otMetrologicas as $om) {                
-                if ($om->idservicio==$s->idservicio) {                        
-                    $data[$i][4] = $om->metrologica; //metrologicas
+                if ($om->{'Nombre'}==$s->nombre) {                        
+                    $data[$i][4] = $om->{'Metrologica'}; //metrologicas
                     break;
                 }
             }
             $data[$i][5] = 0; //inspecciones
             foreach($otInspecciones as $oi) {                
-                if ($oi->idservicio==$s->idservicio) {                        
-                    $data[$i][5] = $oi->inspeccion; //metrologicas
+                if ($oi->{'Nombre'}==$s->nombre) {                        
+                    $data[$i][5] = $oi->{'Inspeccion'}; //metrologicas
                     break;
                 }
             }
@@ -1386,6 +1498,8 @@ class executeController extends Controller
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
+
+            
               $OtPreventivos = DB::table('servicios')
                              ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
                              ->leftJoin('ot_preventivos', function($join)
@@ -1413,18 +1527,16 @@ class executeController extends Controller
                                 ->orderBy('servicios.nombre')
                                 ->get();
             
-            $otRetiros = DB::table('servicios')
-                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_retiros.idot_retiro) as Retiro')))
-                             ->leftJoin('ot_retiros', function($join)
-                                 {
-                                     $join->on('ot_retiros.idservicio', '=', 'servicios.idservicio');
-                                  
-                                 })
-                                ->where('ot_retiros.fecha_programacion','>=', $date_start_c)
-                                ->where('ot_retiros.fecha_programacion','<=', $date_end_c)
-                                ->groupby('servicios.nombre')
-                                ->orderBy('servicios.nombre')
-                                ->get();
+               $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c)                               
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get(); 
 
         $servicios = Servicio::all();
 
@@ -1457,9 +1569,9 @@ class executeController extends Controller
             }
             
             $data[$i][5] = 0; 
-            foreach($otRetiros as $op) {                
+            foreach($otInspecciones as $op) {                
                 if ($op->{'Nombre'}==$ser->nombre) {                        
-                    $data[$i][5] = $op->{'Retiro'}; //inspeccion
+                    $data[$i][5] = $op->{'Inspeccion'}; //inspeccion
                     break;
                 }
             }
@@ -1482,9 +1594,9 @@ class executeController extends Controller
     }
 
     public function e_8_post(Request $request)//PENDIENTE
-  {
-  /*Validator section*/
-     $validator = Validator::make($request->all(),$this->getValidations(true));
+    {
+       /*Validator section*/
+       $validator = Validator::make($request->all(),$this->getValidations(true));
         if ($validator->fails()) {
             return redirect('disponibilidad')
                         ->withErrors($validator)
@@ -1559,6 +1671,18 @@ class executeController extends Controller
                                 ->orderBy('servicios.nombre')
                                 ->get();
 
+          $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c) 
+                            ->where('ot_inspec_equipos.idestado','=',9)//Significa estado pendiente, revisar tabla de estado para corroborar                              
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get(); 
+
 
         
         $servicios = Servicio::all();
@@ -1592,9 +1716,9 @@ class executeController extends Controller
             }
             
             $data[$i][5] = 0; 
-            foreach($otRetiros as $op) {                
+            foreach($otInspecciones as $op) {                
                 if ($op->{'Nombre'}==$ser->nombre) {                        
-                    $data[$i][5] = $op->{'Retiro'}; //inspeccion
+                    $data[$i][5] = $op->{'Inspeccion'}; //inspeccion
                     break;
                 }
             }
@@ -1610,14 +1734,13 @@ class executeController extends Controller
         $dataContainer->method="post";
         $dataContainer->url_post="numero_otm_pendiente_rep";
         $dataContainer->report_name="Número de OTM generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->table=true;
         $dataContainer->chart_title='Número de OTM generados';
         $dataContainer->data_table=$data_table;
         
         return view('indicators.execute.6',compact('dataContainer'));
 
-  }
+    }
 
     public function e_9_post(Request $request)
     {
@@ -1697,6 +1820,18 @@ class executeController extends Controller
                                 ->orderBy('servicios.nombre')
                                 ->get();
 
+            $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c) 
+                            ->whereNull('ot_inspec_equipos.idestado')//Significa estado pendiente, revisar tabla de estado para corroborar                              
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get(); 
+
 
         
         $servicios = Servicio::all();
@@ -1730,9 +1865,9 @@ class executeController extends Controller
             }
             
             $data[$i][5] = 0; 
-            foreach($otRetiros as $op) {                
+            foreach($otInspecciones as $op) {                
                 if ($op->{'Nombre'}==$ser->nombre) {                        
-                    $data[$i][5] = $op->{'Retiro'}; //inspeccion
+                    $data[$i][5] = $op->{'Inspeccion'}; //inspeccion
                     break;
                 }
             }
@@ -1749,8 +1884,7 @@ class executeController extends Controller
         $dataContainer->method="post";
         $dataContainer->url_post="numero_otm_generados_rep";
         $dataContainer->report_name="Número de OTM generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->table=true;
         $dataContainer->chart_title='Número de OTM generados';
         $dataContainer->data_table=$data_table;
         
@@ -1816,8 +1950,7 @@ class executeController extends Controller
         $dataContainer->method="post";
         $dataContainer->url_post="solicitudes_de_trabajo_generados_rep";
         $dataContainer->report_name="Número de trabajos generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->table=true;
         $dataContainer->chart_title='Número de OTM generados';
         $dataContainer->data_table=$data_table;
         
@@ -1902,6 +2035,19 @@ class executeController extends Controller
                                 ->get();
 
 
+            $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c) 
+                            ->where('ot_inspec_equipos.idestado','=',19)
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get(); 
+
+
          $servicios = Servicio::all();
 
         $data = array();
@@ -1933,9 +2079,9 @@ class executeController extends Controller
             }
             
             
-            foreach($otRetiros as $op) {                
+            foreach($otInspecciones as $op) {                
                 if ($op->{'Nombre'}==$ser->nombre) {                        
-                    $data[$i][2] =$data[$i][2]+ $op->{'Retiro'}; //inspeccion
+                    $data[$i][2] =$data[$i][2]+ $op->{'Inspeccion'}; //inspeccion
                     break;
                 }
             }
@@ -1949,8 +2095,7 @@ class executeController extends Controller
         $dataContainer->method="post";
         $dataContainer->url_post="solicitudes_de_trabajo_atendidos_rep";
         $dataContainer->report_name="Número de OTM atendidos";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->table=true;
         $dataContainer->chart_title='Número de OTM atendidos';
         $dataContainer->data_table=$data_table;
         
@@ -2037,6 +2182,18 @@ class executeController extends Controller
                                 ->orderBy('servicios.nombre')
                                 ->get();
 
+              $otInspeccionesF = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c) 
+                            ->where('ot_inspec_equipos.idestado','=',16)
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get(); 
+
             //MAL INGRESO
              $otCorrectivosM = DB::table('servicios')
                              ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
@@ -2093,6 +2250,18 @@ class executeController extends Controller
                                 ->orderBy('servicios.nombre')
                                 ->get();
 
+            $otInspeccionesM = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c) 
+                            ->where('ot_inspec_equipos.idestado','=',26)
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get(); 
+
 
 
 
@@ -2127,9 +2296,9 @@ class executeController extends Controller
             }
             
             
-            foreach($otRetirosF as $or) {                
+            foreach($otInspeccionesF as $or) {                
                 if ($or->{'Nombre'}==$ser->nombre) {                        
-                    $data[$i][2] =$data[$i][2]+ $or->{'Retiro'}; //inspeccion
+                    $data[$i][2] =$data[$i][2]+ $or->{'Inspeccion'}; //inspeccion
                     break;
                 }
             }
@@ -2157,9 +2326,9 @@ class executeController extends Controller
             }
             
             
-            foreach($otRetirosM as $or) {                
+            foreach($otInspeccionesM as $or) {                
                 if ($or->{'Nombre'}==$ser->nombre) {                        
-                    $data[$i][3] =$data[$i][3]+ $or->{'Retiro'}; //inspeccion
+                    $data[$i][3] =$data[$i][3]+ $or->{'Inspeccion'}; //inspeccion
                     break;
                 }
             }
@@ -2172,8 +2341,7 @@ class executeController extends Controller
         $dataContainer->method="post";
         $dataContainer->url_post="solicitudes_de_trabajo_no_atendidos_rep";
         $dataContainer->report_name="Número de OTM no atendidos";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->table=true;
         $dataContainer->chart_title='Número de OTM no atendidos';
         $dataContainer->data_table=$data_table;
         
@@ -2197,56 +2365,96 @@ class executeController extends Controller
         $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
         $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
         
-        $sotCorrectivos = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as correctivo')))
+        $otCorrectivos = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
                          ->leftJoin('ot_correctivos', function($join){
                                 $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');                                  
                              })
-                            ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
-                            ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
-                            ->where('ot_correctivos.idestado_ot','=', 9)           
+                            ->where('ot_correctivos.fecha_inicio_ejecucion','>=', $date_start_c)
+                            ->where('ot_correctivos.fecha_termino_ejecucion','<=', $date_end_c)
+                            ->where('ot_correctivos.idestado_final','=', 9)           
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();                        
         //ot_vmetrologicas
-        $sotPreventivos = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as preventivo')))
+        $otPreventivos = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
                          ->leftJoin('ot_preventivos', function($join) {
                                  $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');                                  
                              })
-                            ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
-                            ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
-                            ->where('ot_correctivos.idestado_ot','=', 9)  
+                            ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
+                            ->where('ot_preventivos.fecha_termino_ejecucion','<=', $date_end_c)
+                            ->where('ot_preventivos.idestado_final','=', 9)  
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();
 
-        $sotMetrologicas = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as metrologica')))
+        $otMetrologicas = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica')))
                          ->leftJoin('ot_vmetrologicas', function($join) {
                                  $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');                                  
                              })
                             ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
                             ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)   
-                            ->where('ot_correctivos.idestado_ot','=', 9)           
+                            ->where('ot_vmetrologicas.idestado_final','=', 9)           
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();   
                              
-        $sotInspecciones = DB::table('servicios')
-                         ->select(array('servicios.idservicio', 'servicios.nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as inspeccion')))
+        $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
                          ->leftJoin('ot_inspec_equipos', function($join) {
                                  $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
                              })
                             ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
-                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                               
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c)
+                            ->where('ot_inspec_equipos.idestado','=', 9)                                
                             ->groupby('servicios.nombre')
                             ->orderBy('servicios.nombre')
                             ->get();       
                              
                              
-        //idestado_ot=9 //ots pendientes
-        $services_aux = Servicio::all();
+          $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$data[$i][2]+ $oc->{'Correctivo'}; //correctivos
+                    break;
+                }
+            }
+            
+            foreach($otPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][2] =$data[$i][2]+ $op->{'Preventivo'}; //preventivo
+                    break;
+                }
+            }
+            
+            foreach($otMetrologicas as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][2] =$data[$i][2] + $op->{'Metrologica'}; //metrologica
+                    break;
+                }
+            }
+            
+            
+            foreach($otInspecciones as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][2] =$data[$i][2]+ $op->{'Inspeccion'}; //inspeccion
+                    break;
+                }
+            }
+        }
+           
+         $data_table=$data;
+
         
         $dataContainer = new dataContainer;
         $dataContainer->page_name = "Número de OTM generados";//nombre de la p'agin;
@@ -2257,13 +2465,12 @@ class executeController extends Controller
         $dataContainer->table=true;
         $dataContainer->data_table=$data_table;
 
-        return view('indicators.execute.13',compact('dataContainer'));
+        return view('indicators.execute.7',compact('dataContainer'));
     }
 
     public function e_14_post(Request $request)
     {
-
-          /*Validator section*/
+       /*Validator section*/
         $validator = Validator::make($request->all(),$this->getValidations(true));
         if ($validator->fails()) {
             return redirect('disponibilidad')
@@ -2284,7 +2491,7 @@ class executeController extends Controller
        
            //FALSA ALARMA
             $otCorrectivos = DB::table('servicios')
-                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo'), DB::raw('COUNT(ot_correctivos.tiempo_ejecucion) as TiempoEjecucion')))
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo'), DB::raw('SUM(ot_correctivos.tiempo_ejecucion) as TiempoEjecucion')))
                              ->leftJoin('ot_correctivos', function($join)
                                  {
                                      $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
@@ -2296,7 +2503,7 @@ class executeController extends Controller
                                 ->orderBy('servicios.nombre')
                                 ->get();
             $OtPreventivos = DB::table('servicios')
-                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo'), DB::raw('COUNT(ot_preventivos.tiempo_ejecucion) as TiempoEjecucion')))
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo'), DB::raw('SUM(ot_preventivos.tiempo_ejecucion) as TiempoEjecucion')))
                              ->leftJoin('ot_preventivos', function($join)
                                  {
                                      $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
@@ -2309,7 +2516,7 @@ class executeController extends Controller
                                 ->get();
 
            $otMetrologicas = DB::table('servicios')
-                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica'), DB::raw('COUNT(ot_vmetrologicas.tiempo_ejecucion) as TiempoEjecucion')))
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica'), DB::raw('SUM(ot_vmetrologicas.tiempo_ejecucion) as TiempoEjecucion')))
                              ->leftJoin('ot_vmetrologicas', function($join)
                                  {
                                      $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
@@ -2322,7 +2529,7 @@ class executeController extends Controller
                                 ->get();
             
             $otRetiros = DB::table('servicios')
-                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_retiros.idot_retiro) as Retiro'), DB::raw('COUNT(ot_retiros.tiempo_ejecucion) as TiempoEjecucion')))
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_retiros.idot_retiro) as Retiro'), DB::raw('SUM(ot_retiros.tiempo_ejecucion) as TiempoEjecucion')))
                              ->leftJoin('ot_retiros', function($join)
                                  {
                                      $join->on('ot_retiros.idservicio', '=', 'servicios.idservicio');
@@ -2333,6 +2540,19 @@ class executeController extends Controller
                                 ->groupby('servicios.nombre')
                                 ->orderBy('servicios.nombre')
                                 ->get();
+
+            $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion'), DB::raw('SUM(ot_inspec_equipos.tiempo_ejecucion) as TiempoEjecucion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_fin','<=', $date_end_c)                             
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+                             
+        
 
             
 
@@ -2368,9 +2588,9 @@ class executeController extends Controller
             }
             
             
-            foreach($otRetiros as $or) {                
+            foreach($otInspecciones as $or) {                
                 if ($or->{'Nombre'}==$ser->nombre) {                        
-                    $data[$i][2] =$data[$i][2]+ ($or->{'TiempoEjecucion'})/(60*($or->{'Retiro'})); //inspeccion
+                    $data[$i][2] =$data[$i][2]+ ($or->{'TiempoEjecucion'})/(60*($or->{'Inspeccion'})); //inspeccion
                     break;
                 }
             }
@@ -2380,81 +2600,1456 @@ class executeController extends Controller
         $data_table=$data;
 
         $dataContainer = new dataContainer;
-        $dataContainer->page_name = "Número de OTM generados";//nombre de la p'agin;
+        $dataContainer->page_name = "Indicador de tiempo medio de respuesta";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="post";
         $dataContainer->url_post="tiempo_medio_de_respuesta_rep";
-        $dataContainer->report_name="Número de OTM generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
-        $dataContainer->chart_title='Indicador de tiempo medio entre fallos';
+        $dataContainer->report_name="Indicador de tiempo medio de respuesta";
+        $dataContainer->table=true;
+        $dataContainer->chart_title='Indicador de tiempo medio de respuesta';
         $dataContainer->data_table=$data_table;
         
-        return view('indicators.execute.9',compact('dataContainer'));
+        return view('indicators.execute.7',compact('dataContainer'));
     }
 
     public function e_15_post(Request $request)
     {
+      /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+       
+           //ORDENES ACABADAS EN LA FECHA DE PLANIFICACION
+            $otCorrectivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.fecha_inicio_ejecucion','=', 'ot_correctivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_preventivos.fecha_inicio_ejecucion','=', 'ot_preventivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicas = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica')))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_vmetrologicas.fecha_inicio_ejecucion','=', 'ot_vmetrologicas.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+            $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                             
+                            ->where('ot_inspec_equipos.fecha_inicio_ejecucion','=', 'ot_inspec_equipos.fecha_inicio')
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+                             
+          //ORDENES PLANIFICADAS TOTALES
+             $otCorrectivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicasT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica')))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+            $otInspeccionesT = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                             
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+           
+
+             $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            $data[$i][3] = 0;
+            $data[$i][4] = 0;
+            $data[$i][5] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =($oc->{'Correctivo'}); //correctivos
+                    break;
+                }
+            }
+
+            foreach($otCorrectivosT as $oct) {                    
+                if ($oct->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$data[$i][2]/($oct->{'Correctivo'}); //correctivos
+                    break;
+                }
+            }
+
+            
+            foreach($OtPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$op->{'Preventivo'}; //preventivo
+                    break;
+                }
+            }
+
+            foreach($OtPreventivosT as $opt) {                
+                if ($opt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$data[$i][3]/($opt->{'Preventivo'}); //preventivo
+                    break;
+                }
+            }
+
+            
+            foreach($otMetrologicas as $om) {                
+                if ($om->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$om->{'Metrologica'}; //metrologica
+                    break;
+                }
+            }
+
+
+            foreach($otMetrologicas as $omt) {                
+                if ($omt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$data[$i][4]/($omt->{'Metrologica'}); //metrologica
+                    break;
+                }
+            }
+            
+            
+            foreach($otInspecciones as $or) {                
+                if ($or->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][5] =$or->{'Inspeccion'}; //inspeccion
+                    break;
+                }
+            }
+
+            foreach($otInspecciones as $ort) {                
+                if ($ort->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][5] =$data[$i][5]/($ort->{'Inspeccion'}); //inspeccion
+                    break;
+                }
+            }
+
+        }
+           
+        $data_table=$data;
         $dataContainer = new dataContainer;
-        $dataContainer->page_name = "Número de OTM generados";//nombre de la p'agin;
+        $dataContainer->page_name = "Cumplimiento de planificacion";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="post";
-        $dataContainer->url_post="numero_otm_generados_rep";
-        $dataContainer->report_name="Número de OTM generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
-        $dataContainer->chart_title='Número de OTM generados';
-        $dataContainer->data_chart=$data_chart;
+        $dataContainer->url_post="cumplimiento_de_planificación_rep";
+        $dataContainer->report_name="Cumplimiento de planificacion";
+        $dataContainer->table=true;
+        $dataContainer->chart_title='Cumplimiento de Planificación';
+        $dataContainer->data_table=$data_table;
 
         return view('indicators.execute.6',compact('dataContainer'));
     }
 
     public function e_16_post(Request $request)
     {
+
+      /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+       
+           //Suma de retrasos de cada OTM
+            $otCorrectivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_correctivos.fecha_inicio_ejecucion,ot_correctivos.fecha_programacion))) as Tiempo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.fecha_inicio_ejecucion','=', 'ot_correctivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_preventivos.fecha_inicio_ejecucion,ot_preventivos.fecha_programacion))) as Tiempo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_preventivos.fecha_inicio_ejecucion','=', 'ot_preventivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicas = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_vmetrologicas.fecha_inicio_ejecucion,ot_vmetrologicas.fecha_programacion))) as Tiempo')))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_vmetrologicas.fecha_inicio_ejecucion','=', 'ot_vmetrologicas.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+            $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_inspec_equipos.fecha_inicio_ejecucion,ot_inspec_equipos.fecha_inicio))) as Tiempo')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                             
+                            ->where('ot_inspec_equipos.fecha_inicio_ejecucion','=', 'ot_inspec_equipos.fecha_inicio')
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+                             
+          //OTMS PLANIFICADAS TOTALES
+             $otCorrectivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicasT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica')))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+            $otInspeccionesT = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                             
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+           
+
+             $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            $data[$i][3] = 0;
+            $data[$i][4] = 0;
+            $data[$i][5] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'Tiempo'}; //correctivos
+                    break;
+                }
+            }
+
+            foreach($otCorrectivosT as $oct) {                    
+                if ($oct->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$data[$i][2]/($oct->{'Correctivo'}); //correctivos
+                    break;
+                }
+            }
+
+            
+            foreach($OtPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$op->{'Tiempo'}; //preventivo
+                    break;
+                }
+            }
+
+            foreach($OtPreventivosT as $opt) {                
+                if ($opt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$data[$i][3]/($opt->{'Preventivo'}); //preventivo
+                    break;
+                }
+            }
+
+            
+            foreach($otMetrologicas as $om) {                
+                if ($om->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$om->{'Tiempo'}; //metrologica
+                    break;
+                }
+            }
+
+
+            foreach($otMetrologicas as $omt) {                
+                if ($omt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$data[$i][4]/($omt->{'Metrologica'}); //metrologica
+                    break;
+                }
+            }
+            
+            
+            foreach($otInspecciones as $or) {                
+                if ($or->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][5] =$or->{'Tiempo'}; //inspeccion
+                    break;
+                }
+            }
+
+            foreach($otInspecciones as $ort) {                
+                if ($ort->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][5] =$data[$i][5]/($ort->{'Inspeccion'}); //inspeccion
+                    break;
+                }
+            }
+
+        }
+        
+        $data_table=$data;
+
         $dataContainer = new dataContainer;
-        $dataContainer->page_name = "Número de OTM generados";//nombre de la p'agin;
+        $dataContainer->page_name = "Desviación Media de Tiempo Planificado";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="post";
-        $dataContainer->url_post="numero_otm_generados_rep";
-        $dataContainer->report_name="Número de OTM generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
-        $dataContainer->chart_title='Número de OTM generados';
-        $dataContainer->data_chart=$data_chart;
+        $dataContainer->url_post="desviación_media_de_tiempo_planificado_rep";
+        $dataContainer->report_name="Desviación Media de Tiempo Planificado";
+        $dataContainer->table=true;
+        $dataContainer->chart_title='Desviación Media de Tiempo Planificado';
+        $dataContainer->data_table=$data_table;
 
         return view('indicators.execute.6',compact('dataContainer'));
     }
 
     public function e_17_post(Request $request)
     {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+       
+           //Desviacion Media de horas hombres empleadas
+            $otCorrectivos = DB::table('ot_correctivos')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(personal_ot_correctivos.horas_hombre) as HORASHOMBRE')))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idot_correctivo', '=', 'personal_ot_correctivos.idot_correctivo');
+                                  
+                                 })
+
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.fecha_inicio_ejecucion','=', 'ot_correctivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivos = DB::table('ot_preventivos')
+                             ->select(array('servicios.nombre as Nombre',DB::raw('SUM(personal_ot_preventivos.horas_hombre) as HORASHOMBRE')))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idot_preventivo', '=', 'personal_ot_preventivos.idot_preventivo');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_preventivos.fecha_inicio_ejecucion','=', 'ot_preventivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicas = DB::table('ot_vmetrologicas')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(personal_ot_vmetrologicas.horas_hombres) as HORASHOMBRE')))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idot_vmetrologica', '=', 'personal_ot_vmetrologicas.idot_vmetrologica');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_vmetrologicas.fecha_inicio_ejecucion','=', 'ot_vmetrologicas.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+     
+                             
+          //OTMS PLANIFICADAS TOTALES
+             $otCorrectivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicasT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica')))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+           
+           
+
+             $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            $data[$i][3] = 0;
+            $data[$i][4] = 0;
+            $data[$i][5] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'HORASHOMBRE'}; //correctivos
+                    break;
+                }
+            }
+
+            foreach($otCorrectivosT as $oct) {                    
+                if ($oct->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$data[$i][2]/($oct->{'Correctivo'}); //correctivos
+                    break;
+                }
+            }
+
+            
+            foreach($OtPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$op->{'HORASHOMBRE'}; //preventivo
+                    break;
+                }
+            }
+
+            foreach($OtPreventivosT as $opt) {                
+                if ($opt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$data[$i][3]/($opt->{'Preventivo'}); //preventivo
+                    break;
+                }
+            }
+
+            
+            foreach($otMetrologicas as $om) {                
+                if ($om->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$om->{'HORASHOMBRE'}; //metrologica
+                    break;
+                }
+            }
+
+
+            foreach($otMetrologicasT as $omt) {                
+                if ($omt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$data[$i][4]/($omt->{'Metrologica'}); //metrologica
+                    break;
+                }
+            }
+            
+
+        }
+        
+        $data_table=$data;
+
         $dataContainer = new dataContainer;
         $dataContainer->page_name = "Número de OTM generados";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="post";
         $dataContainer->url_post="numero_otm_generados_rep";
         $dataContainer->report_name="Número de OTM generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->table=true;
         $dataContainer->chart_title='Número de OTM generados';
-        $dataContainer->data_chart=$data_chart;
+        $dataContainer->data_table=$data_table;
 
         return view('indicators.execute.6',compact('dataContainer'));
     }
 
     public function e_18_post(Request $request)
     {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+       
+           //Suma de retrasos de cada OTM
+            $otCorrectivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_correctivos.fecha_inicio_ejecucion,ot_correctivos.fecha_termino_ejecucion))) as Tiempo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.fecha_inicio_ejecucion','=', 'ot_correctivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_preventivos.fecha_inicio_ejecucion,ot_preventivos.fecha_termino_ejecucion))) as Tiempo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_preventivos.fecha_inicio_ejecucion','=', 'ot_preventivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicas = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_vmetrologicas.fecha_inicio_ejecucion,ot_vmetrologicas.fecha_termino_ejecucion))) as Tiempo')))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_vmetrologicas.fecha_inicio_ejecucion','=', 'ot_vmetrologicas.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+            $otInspecciones = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('SUM(ABS(TIMESTAMPDIFF(HOUR,ot_inspec_equipos.fecha_inicio_ejecucion,ot_inspec_equipos.fecha_termino_ejecucion))) as Tiempo')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                             
+                            ->where('ot_inspec_equipos.fecha_inicio_ejecucion','=', 'ot_inspec_equipos.fecha_inicio')
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+                             
+          //OTMS PLANIFICADAS TOTALES
+             $otCorrectivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_correctivos.idot_correctivo) as Correctivo')))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_preventivos.idot_preventivo) as Preventivo')))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicasT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_vmetrologicas.idot_vmetrologica) as Metrologica')))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+            $otInspeccionesT = DB::table('servicios')
+                         ->select(array('servicios.nombre as Nombre', DB::raw('COUNT(ot_inspec_equipos.idot_inspec_equipo) as Inspeccion')))
+                         ->leftJoin('ot_inspec_equipos', function($join) {
+                                 $join->on('ot_inspec_equipos.idservicio', '=', 'servicios.idservicio');                                  
+                             })
+                            ->where('ot_inspec_equipos.fecha_inicio','>=', $date_start_c)
+                            ->where('ot_inspec_equipos.fecha_inicio','<=', $date_end_c)                             
+                            ->groupby('servicios.nombre')
+                            ->orderBy('servicios.nombre')
+                            ->get();       
+           
+
+             $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            $data[$i][3] = 0;
+            $data[$i][4] = 0;
+            $data[$i][5] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'Tiempo'}; //correctivos
+                    break;
+                }
+            }
+
+            foreach($otCorrectivosT as $oct) {                    
+                if ($oct->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$data[$i][2]/($oct->{'Correctivo'}); //correctivos
+                    break;
+                }
+            }
+
+            
+            foreach($OtPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$op->{'Tiempo'}; //preventivo
+                    break;
+                }
+            }
+
+            foreach($OtPreventivosT as $opt) {                
+                if ($opt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$data[$i][3]/($opt->{'Preventivo'}); //preventivo
+                    break;
+                }
+            }
+
+            
+            foreach($otMetrologicas as $om) {                
+                if ($om->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$om->{'Tiempo'}; //metrologica
+                    break;
+                }
+            }
+
+
+            foreach($otMetrologicas as $omt) {                
+                if ($omt->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$data[$i][4]/($omt->{'Metrologica'}); //metrologica
+                    break;
+                }
+            }
+            
+            
+            foreach($otInspecciones as $or) {                
+                if ($or->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][5] =$or->{'Tiempo'}; //inspeccion
+                    break;
+                }
+            }
+
+            foreach($otInspecciones as $ort) {                
+                if ($ort->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][5] =$data[$i][5]/($ort->{'Inspeccion'}); //inspeccion
+                    break;
+                }
+            }
+
+        }
+        
+        $data_table=$data;
+
         $dataContainer = new dataContainer;
-        $dataContainer->page_name = "Número de OTM generados";//nombre de la p'agin;
+        $dataContainer->page_name = "Tiempo Medio de Resolución de OTM";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="post";
-        $dataContainer->url_post="numero_otm_generados_rep";
-        $dataContainer->report_name="Número de OTM generados";
-        $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
-        $dataContainer->chart_title='Número de OTM generados';
-        $dataContainer->data_chart=$data_chart;
+        $dataContainer->url_post="tiempo_medio_de_resolución_de_otm_rep";
+        $dataContainer->report_name="Tiempo Medio de Resolución de OTM";
+        $dataContainer->table=true;
+        $dataContainer->chart_title='Tiempo Medio de Resolución de OTM';
+        $dataContainer->data_table=$data_table;
 
         return view('indicators.execute.6',compact('dataContainer'));
+    }
+
+    /***********************************INDICADORES DE COSTOS********************************************/
+    public function c_1_post(Request $request)
+    {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+       
+           //Desviacion Media de horas hombres empleadas
+            $otCorrectivos = DB::table('ot_correctivos')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(personal_ot_correctivos.costo) as Costo')))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idot_correctivo', '=', 'personal_ot_correctivos.idot_correctivo');
+                                  
+                                 })
+
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.fecha_inicio_ejecucion','=', 'ot_correctivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivos = DB::table('ot_preventivos')
+                             ->select(array('servicios.nombre as Nombre',DB::raw('SUM(personal_ot_preventivos.costo) as Costo')))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idot_preventivo', '=', 'personal_ot_preventivos.idot_preventivo');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_preventivos.fecha_inicio_ejecucion','=', 'ot_preventivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicas = DB::table('ot_vmetrologicas')
+                             ->select(array('servicios.nombre as Nombre', DB::raw('SUM(personal_ot_vmetrologicas.costo) as Costo')))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idot_vmetrologica', '=', 'personal_ot_vmetrologicas.idot_vmetrologica');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_vmetrologicas.fecha_inicio_ejecucion','=', 'ot_vmetrologicas.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+
+             $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            $data[$i][3] = 0;
+            $data[$i][4] = 0;
+            $data[$i][5] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'Costo'}; //correctivos
+                    break;
+                }
+            }
+
+        
+            
+            foreach($OtPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$op->{'Costo'}; //preventivo
+                    break;
+                }
+            }
+
+        
+
+            
+            foreach($otMetrologicas as $om) {                
+                if ($om->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$om->{'Costo'}; //metrologica
+                    break;
+                }
+            }
+
+
+
+        }
+        $data_table=$data;
+
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo de Mano de Obra";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_mano_de_obra_rep";
+        $dataContainer->report_name="Costo de Mano de Obra";
+        $dataContainer->table=true;
+        $dataContainer->data_table=$data_table;
+
+        return view('indicators.execute.14',compact('dataContainer'));
+
+    }
+
+    public function c_2_post(Request $request)
+    {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+       
+           //Desviacion Media de horas hombres empleadas
+            $otCorrectivos = DB::table('ot_correctivos')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('SUM(personal_ot_correctivos.costo) as Costo'),
+                                DB::raw('SUM(personal_ot_correctivos.horas_hombre) as HorasHombre')
+                                ))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idot_correctivo', '=', 'personal_ot_correctivos.idot_correctivo');
+                                  
+                                 })
+
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.fecha_inicio_ejecucion','=', 'ot_correctivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivos = DB::table('ot_preventivos')
+                             ->select(array('servicios.nombre as Nombre',
+                                DB::raw('SUM(personal_ot_preventivos.costo) as Costo'),
+                                DB::raw('SUM(personal_ot_preventivos.horas_hombre) as HorasHombre')
+                                ))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idot_preventivo', '=', 'personal_ot_preventivos.idot_preventivo');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_preventivos.fecha_inicio_ejecucion','=', 'ot_preventivos.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicas = DB::table('ot_vmetrologicas')
+                             ->select(array('servicios.nombre as Nombre',
+                              DB::raw('SUM(personal_ot_vmetrologicas.costo) as Costo'),
+                              DB::raw('SUM(personal_ot_vmetrologicas.horas_hombre) as HorasHombre')
+                              ))
+                             ->rightJoin('servicios', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                             ->rightJoin('personal_ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idot_vmetrologica', '=', 'personal_ot_vmetrologicas.idot_vmetrologica');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_vmetrologicas.fecha_inicio_ejecucion','=', 'ot_vmetrologicas.fecha_programacion')
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+        $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            $data[$i][3] = 0;
+            $data[$i][4] = 0;
+            $data[$i][5] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'Costo'}/($oc->{'HorasHombre'}); //correctivos
+                    break;
+                }
+            }
+
+        
+            
+            foreach($OtPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$op->{'Costo'}/($op->{'HorasHombre'}); //preventivo
+                    break;
+                }
+            }
+
+        
+
+            
+            foreach($otMetrologicas as $om) {                
+                if ($om->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$om->{'Costo'}/($om->{'HorasHombre'}); //metrologica
+                    break;
+                }
+            }
+
+
+
+        }
+         $data_table=$data;
+
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo por hora de Mano de Obra";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_hora_mano_de_obra_rep";
+        $dataContainer->report_name="Costo de hora de Mano de Obra";
+        $dataContainer->table=true;
+        $dataContainer->data_table=$data_table;
+        
+
+        return view('indicators.execute.14',compact('dataContainer'));
+    }
+
+    public function c_3_post(Request $request)
+    {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+             $otCorrectivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('SUM(ot_correctivos.costo_total_repuestos + ot_correctivos.costo_total_personal) as Costo')
+                                ))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            $OtPreventivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('SUM(ot_preventivos.costo_total_repuestos + ot_preventivos.costo_total_personal) as Costo')
+                                ))
+                             ->leftJoin('ot_preventivos', function($join)
+                                 {
+                                     $join->on('ot_preventivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_preventivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_preventivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+
+           $otMetrologicas = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('SUM(ot_vmetrologicas.costo_total) as Costo')
+                                ))
+                             ->leftJoin('ot_vmetrologicas', function($join)
+                                 {
+                                     $join->on('ot_vmetrologicas.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_vmetrologicas.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_vmetrologicas.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();   
+
+        $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+            $data[$i][3] = 0;
+            $data[$i][4] = 0;
+            $data[$i][5] = 0;
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'Costo'}; //correctivos
+                    break;
+                }
+            }
+
+            
+            foreach($OtPreventivos as $op) {                
+                if ($op->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][3] =$op->{'Costo'}; //preventivo
+                    break;
+                }
+            }
+
+            
+            foreach($otMetrologicas as $om) {                
+                if ($om->{'Nombre'}==$ser->nombre) {                        
+                    $data[$i][4] =$om->{'Costo'}; //metrologica
+                    break;
+                }
+            }
+
+        }
+     
+        $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo de Mantenimiento";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_mantenimiento_rep";
+        $dataContainer->report_name="Costo de Mantenimiento";
+        $dataContainer->table=true;
+        $dataContainer->chart_title='Costo de Mantenimiento';
+        $dataContainer->data_table=$data_table;
+       
+        return view('indicators.execute.14',compact('dataContainer'));
+    }
+
+    public function c_4_post(Request $request)
+    {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+            //OT MAXIMA PRIORIDAD
+             $otCorrectivos = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('COUNT(ot_correctivos.idot_correctivo) as OTPrioridad')
+                                ))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.idprioridad','=',3)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            //OT TOTALES
+
+            $otCorrectivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('COUNT(ot_correctivos.idot_correctivo) as Ot')
+                                ))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+        $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+  
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'OTPrioridad'}; //correctivos
+                    break;
+                }
+            }
+
+
+            foreach($otCorrectivosT as $oct) {                    
+                if ($oct->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] = round($data[$i][2]/($oct->{'Ot'}), 2); //correctivos
+                    break;
+                }
+            }
+
+        }
+
+        $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Indice de Emergencia";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="indice_de_emergencia_rep";
+        $dataContainer->report_name="Indice de Emergencia";
+        $dataContainer->table=true;
+        $dataContainer->chart_title='Indice de Emergencia';
+        $dataContainer->data_table=$data_table;
+       
+
+        return view('indicators.execute.15',compact('dataContainer'));
+    }
+
+    public function c_5_post(Request $request)
+    {
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();
+       
+        $otCorrectivos=null;
+        $OtPreventivos=null;
+        $otMetrologicas=null;
+        $otRetiros=null;
+
+            //OT MAXIMA PRIORIDAD
+             $otCorrectivos = DB::table('activos')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('COUNT(ot_correctivos.idot_correctivo) as OTPrioridad')
+                                ))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->where('ot_correctivos.idprioridad','=',3)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            //OT TOTALES
+
+            $otCorrectivosT = DB::table('servicios')
+                             ->select(array('servicios.nombre as Nombre', 
+                                DB::raw('COUNT(ot_correctivos.idot_correctivo) as Ot')
+                                ))
+                             ->leftJoin('ot_correctivos', function($join)
+                                 {
+                                     $join->on('ot_correctivos.idservicio', '=', 'servicios.idservicio');
+                                  
+                                 })
+                                ->where('ot_correctivos.fecha_programacion','>=', $date_start_c)
+                                ->where('ot_correctivos.fecha_programacion','<=', $date_end_c)
+                                ->groupby('servicios.nombre')
+                                ->orderBy('servicios.nombre')
+                                ->get();
+            
+
+        $servicios = Servicio::all();
+
+        $data = array();
+        $i=0;
+        foreach($servicios as $ser) {
+            $i++;
+            
+            $data[$i][1] = $ser->nombre; //nombreServicios
+            $data[$i][2] = 0;
+  
+            foreach($otCorrectivos as $oc) {                    
+                if ($oc->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] =$oc->{'OTPrioridad'}; //correctivos
+                    break;
+                }
+            }
+
+
+            foreach($otCorrectivosT as $oct) {                    
+                if ($oct->{'Nombre'}==$ser->nombre) {
+                    $data[$i][2] = round($data[$i][2]/($oct->{'Ot'}), 2); //correctivos
+                    break;
+                }
+            }
+
+        }
+
+        $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Costo Actual de Equipo";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="costo_actual_de_equipo_rep";
+        $dataContainer->report_name="Costo Actual de Equipo";
+        $dataContainer->table=true;
+        $dataContainer->data_chart=false;
+        $dataContainer->chart_title='Costo Actual de Equipo';
+        $dataContainer->data_table=$data_table;
+
+        return view('indicators.execute.15',compact('dataContainer'));
     }
 
     /**
