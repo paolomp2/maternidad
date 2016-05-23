@@ -94,7 +94,26 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::get('tiempo_medio_de_resolución_de_otm', 'executeController@e_18');
 	Route::post('tiempo_medio_de_resolución_de_otm_rep', 'executeController@e_18_post');
 
-
+	//assets routes
+	
+	//1
+	Route::get('motivo_baja_equipo', 'assetsController@a_1');
+	Route::post('motivo_baja_equipo_rep', 'assetsController@a_1_post');
+	//2
+	Route::get('bajas_generadas', 'assetsController@a_2');
+	Route::post('bajas_generadas_rep', 'assetsController@a_2_post');
+	//3
+	Route::get('bajas_atendidas', 'assetsController@a_3');
+	Route::post('bajas_atendidas_rep', 'assetsController@a_3_post');
+	//4
+	Route::get('bajas_pendientes', 'assetsController@a_4');
+	Route::post('bajas_pendientes_rep', 'assetsController@a_4_post');
+	//5
+	Route::get('bajas_no_atendidas', 'assetsController@a_5');
+	Route::post('bajas_no_atendidas_rep', 'assetsController@a_5_post');
+	//6
+	Route::get('costo_mano_de_obra', 'assetsController@a_6');
+	Route::post('costo_mano_de_obra_rep', 'assetsController@a_6_post');
 	
 	
 });

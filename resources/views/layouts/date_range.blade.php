@@ -46,7 +46,7 @@
 				<div class="form-group col-md-4">
 					{!! Form::label('search_grupo','Grupo') !!}
 					{!! Form::select('search_grupo', array(
-					'0'=>'',
+					'0'=>'Seleccione una opción',
 					'1' => 'GRUPO 1: EQUIPOS BIOMEDICOS DE CIRUGIA', 
 					'2' => 'GRUPO 2: EQUIPOS BIOMEDICOS DE NEONATOLOGIA', 
 					'3' => 'GRUPO 3: EQUIPOS BIOMEDICOS DE APOYO AL DIAGNOSTICO E IMAGENOLOGIA',
@@ -58,7 +58,7 @@
 				<div class="form-group col-md-4">
 					{!! Form::label('search_servicio','Servicio') !!}
 					{!! Form::select('search_servicio', array(
-					'0'=>'',
+					'0'=>'Seleccione una opción',
 					'1' => 'ANATOMIA PATOLOGICA', 
 					'2' => 'ATENCION INMEDIATA Y EMERGENCIA', 
 					'3' => 'BANCO DE LECHE',
