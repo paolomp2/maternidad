@@ -33,11 +33,11 @@
                     <?php foreach($data_table as $data) { ?>
                         <tr>
                             <th scope="row"><?php echo $data[0]; ?></th>
-                            <td><?php echo $data[1]; ?></td>
-                            <td><?php echo $data[2]; ?></td>
-                            <td><?php echo $data[3]; ?></td>
-                            <td><?php echo $data[4]; ?></td>            
-                            <td><?php echo $data[5]; ?></td>
+                            <td><center><?php echo $data[1]; ?></center></td>
+                            <td><center><?php echo $data[2]; ?></center></td>
+                            <td><center><?php echo $data[3]; ?></center></td>
+                            <td><center><?php echo $data[4]; ?></center></td>
+                            <td><center><?php echo $data[5]; ?></center></td>
                         </tr>
                     <?php } ?>				    				                  
                 </tbody>

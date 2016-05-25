@@ -22,22 +22,16 @@
                 <thead>
                     <tr>
                         <th>Servicios Clínicos</th>
-                        <th>Obsolescencia Tecnológica</th>
-                        <th>Costos de Reparación o Mantenimiento</th>
-                        <th>Antigüedad</th>
-                        <th>Eventos Adversos e Incidentes</th>
-                        <th>Disponibilidad de repuestos, accesorios y consumibles</th>
+                        <th>Baja Virtual</th>
+                        <th>Baja Definitiva</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($data_table as $data) { ?>
                         <tr>
                             <th scope="row"><?php echo $data[0]; ?></th>
-                            <td><?php echo $data[1]; ?></td>
-                            <td><?php echo $data[2]; ?></td>
-                            <td><?php echo $data[3]; ?></td>
-                            <td><?php echo $data[4]; ?></td>            
-                            <td><?php echo $data[5]; ?></td>
+                            <td><center><?php echo $data[1]; ?></center></td>
+                            <td><center><?php echo $data[2]; ?></center></td>
                         </tr>
                     <?php } ?>				    				                  
                 </tbody>
@@ -48,4 +42,5 @@
         </div>
     </div>						
 </div>
+
 @endsection
