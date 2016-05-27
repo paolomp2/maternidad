@@ -27,7 +27,7 @@
             <li>
                 <a href="#">Indicadores de Costo<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level"> 
-                          <li><?php echo link_to('/costo_mano_de_obra', $title ='Costo de Mano de Obra', $attributes = [], $secure = null); ?></li>
+                          <li><?php echo link_to('/costo_mano_de_obra_1', $title ='Costo de Mano de Obra', $attributes = [], $secure = null); ?></li>
                         <li><?php echo link_to('/costo_hora_mano_de_obra', $title ='Costo por Hora Mano de Obra', $attributes = [], $secure = null); ?></li>
                         <li><?php echo link_to('/costo_mantenimiento', $title ='Costo Mantenimiento', $attributes = [], $secure = null); ?></li>
                         <li><?php echo link_to('/indice_de_emergencia', $title ='Indice de Emergencia', $attributes = [], $secure = null); ?></li>

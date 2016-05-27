@@ -95,8 +95,8 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::post('tiempo_medio_de_resolución_de_otm_rep', 'executeController@e_18_post');
 
 	//COST INDICATORS
-	Route::get('costo_mano_de_obra', 'executeController@c_1');
-	Route::post('costo_mano_de_obra_rep', 'executeController@c_1_post');
+	Route::get('costo_mano_de_obra_1', 'executeController@c_1');
+	Route::post('costo_mano_de_obra_rep_1', 'executeController@c_1_post');
 
 	Route::get('costo_hora_mano_de_obra', 'executeController@c_2');
 	Route::post('costo_hora_mano_de_obra_rep', 'executeController@c_2_post');

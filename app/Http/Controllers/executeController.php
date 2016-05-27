@@ -258,7 +258,7 @@ class executeController extends Controller
         $dataContainer->page_name = "Costo de Mano de Obra";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="get";
-        $dataContainer->url_post="costo_mano_de_obra_rep";
+        $dataContainer->url_post="costo_mano_de_obra_rep_1";
         $dataContainer->report_name="Costo de Mano de Obra";
         $dataContainer->serial_number=false;
         $dataContainer->patrimonial_code=false;
@@ -3592,7 +3592,7 @@ class executeController extends Controller
         $dataContainer->page_name = "Costo de Mano de Obra";//nombre de la p'agin;
         $dataContainer->siderbar_type = "execute";//Tipo de siderbar que se requere desplega;
         $dataContainer->method="post";
-        $dataContainer->url_post="costo_mano_de_obra_rep";
+        $dataContainer->url_post="costo_mano_de_obra_rep_1";
         $dataContainer->report_name="Costo de Mano de Obra";
         $dataContainer->table=true;
         $dataContainer->data_table=$data_table;
