@@ -118,7 +118,7 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::post('eficiencia_de_cumplimiento_de_pedido_rep','requestController@r_2_post');
 
 	Route::get('tiempo_promedio_de_compra','requestController@r_3');
-	Route::post('tiempo_promedio_de_compra_rep','requestController@r_3');
+	Route::post('tiempo_promedio_de_compra_rep','requestController@r_3_post');
 
 	Route::get('diferencia_porcentual_entre_estimaciones_de_consumo_y_consumo_real','requestController@r_4');
 	Route::post('diferencia_porcentual_entre_estimaciones_de_consumo_y_consumo_real_rep','requestController@r_4_post');
