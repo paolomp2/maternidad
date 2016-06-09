@@ -17,6 +17,8 @@
                 @include('layouts.siderbar.assets')
             @elseif($dataContainer->siderbar_type=='request')
                 @include('layouts.siderbar.request')
+            @elseif($dataContainer->siderbar_type=='providers')
+                @include('layouts.siderbar.providers')
             @endif
         </nav>
         <div id="page-wrapper">

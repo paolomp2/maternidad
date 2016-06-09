@@ -61,6 +61,7 @@ class HomeController extends Controller
     {
         $dataContainer = new dataContainer;
         $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "providers";
 
         return view('home',compact('dataContainer'));
     }

@@ -150,6 +150,17 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::get('costo_mano_de_obra', 'assetsController@a_6');
 	Route::post('costo_mano_de_obra_rep', 'assetsController@a_6_post');
 
+//providers routes
+	
+	//1
+	Route::get('eficiencia_ejecucion_otm', 'providersController@p_1');
+	Route::post('eficiencia_ejecucion_otm_rep', 'providersController@p_1_post');
+	//2
+	Route::get('procentaje_trabajos_incumplidos', 'providersController@p_2');
+	Route::post('procentaje_trabajos_incumplidos_rep', 'providersController@p_2_post');
+	//3
+	Route::get('trabajos_asignados', 'providersController@p_3');
+	Route::post('trabajos_asignados_rep', 'providersController@p_3_post');
 	
 });
 
