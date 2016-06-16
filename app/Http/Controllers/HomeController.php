@@ -66,6 +66,33 @@ class HomeController extends Controller
         return view('home',compact('dataContainer'));
     }
 
+    public function planning ()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "planning";
+
+        return view('home',compact('dataContainer'));
+    }
+
+    public function purchase ()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "purchase";
+
+        return view('home',compact('dataContainer'));
+    }
+
+    public function risks ()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "risks";
+
+        return view('home',compact('dataContainer'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -35,6 +35,9 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::get('baja_bienes', 'HomeController@assets');
 	Route::get('requerimientos', 'HomeController@requirements');
 	Route::get('proveedores', 'HomeController@providers');
+	Route::get('planificacion', 'HomeController@planning');
+	Route::get('adquisicion', 'HomeController@purchase');
+	Route::get('riesgos', 'HomeController@risks');
 
 	//execution routes
 	//TIME INDICATORS
@@ -161,6 +164,56 @@ Route::group(['middleware' => 'otTimes'], function () {
 	//3
 	Route::get('trabajos_asignados', 'providersController@p_3');
 	Route::post('trabajos_asignados_rep', 'providersController@p_3_post');
+
+	//planificacion routes
 	
+	//1
+	Route::get('reportes_cn_ingresados', 'planificacionController@p_1');
+	Route::post('reportes_cn_ingresados_rep', 'planificacionController@p_1_post');
+	//2
+	Route::get('reportes_priorizacion', 'planificacionController@p_2');
+	Route::post('reportes_priorizacion_rep', 'planificacionController@p_2_post');
+	//3
+	Route::get('precios_referenciales_ingresados', 'planificacionController@p_3');
+	Route::post('precios_referenciales_ingresados_rep', 'planificacionController@p_3_post');
+
+	//adquisicion routes
+	
+	//1
+	Route::get('compras_programadas_año', 'adquisicionController@a_1');
+	Route::post('compras_programadas_año_rep', 'adquisicionController@a_1_post');
+	//2
+	Route::get('ejecucion_compras', 'adquisicionController@a_2');
+	Route::post('ejecucion_compras_rep', 'adquisicionController@a_2_post');
+	//3
+	Route::get('personal_comite', 'adquisicionController@a_3');
+	Route::post('personal_comite_rep', 'adquisicionController@a_3_post');
+	//4
+	Route::get('gasto_efectivo_compras', 'adquisicionController@a_4');
+	Route::post('gasto_efectivo_compras_rep', 'adquisicionController@a_4_post');
+	//5
+	Route::get('tiempo_compra_equipos', 'adquisicionController@a_5');
+	Route::post('tiempo_compra_equipos_rep', 'adquisicionController@a_5_post');
+
+	//riesgos routes
+	
+	//1
+	Route::get('eventos_adversos_por_edades', 'riesgosController@r_1');
+	Route::post('eventos_adversos_por_edades_rep', 'riesgosController@r_1_post');
+	//2
+	Route::get('eventos_adversos_por_sexo', 'riesgosController@r_2');
+	Route::post('eventos_adversos_por_sexo_rep', 'riesgosController@r_2_post');
+	//3
+	Route::get('eventos_adversos_por_tipo_incidente', 'riesgosController@r_3');
+	Route::post('eventos_adversos_por_tipo_incidente_rep', 'riesgosController@r_3_post');
+	//4
+	Route::get('eventos_adversos_por_entorno_asistencial', 'riesgosController@r_4');
+	Route::post('eventos_adversos_por_entorno_asistencial_rep', 'riesgosController@r_4_post');
+	//5
+	Route::get('eventos_adversos_por_equipo_medico', 'riesgosController@r_5');
+	Route::post('eventos_adversos_por_equipo_medico_rep', 'riesgosController@r_5_post');
+	//6
+	Route::get('calibracion', 'riesgosController@r_6');
+	Route::post('calibracion_rep', 'riesgosController@r_6_post');
 });
 

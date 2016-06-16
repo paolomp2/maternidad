@@ -22,13 +22,22 @@
 		<a href="{{ URL::to('ejecucion') }}"><i class="fa fa-dashboard fa-fw"></i> Ejecución</a>
     </li>
 	<li>
-		<a href="{{ URL::to('baja_bienes') }}"><i class="fa fa-calendar fa-fw"></i> Baja de Bienes</a>
+		<a href="{{ URL::to('baja_bienes') }}"><i class="fa fa-ban fa-fw"></i> Baja de Bienes</a>
     </li>
 	<li>
-		<a href="{{ URL::to('requerimientos') }}"><i class="fa fa-credit-card fa-fw"></i> Requerimientos</a>
+		<a href="{{ URL::to('requerimientos') }}"><i class="fa fa-tasks fa-fw"></i> Requerimientos</a>
     </li>
 	<li>
-		<a href="{{ URL::to('proveedores') }}"><i class="fa fa-wrench fa-fw"></i> Proveedores</a>
+		<a href="{{ URL::to('proveedores') }}"><i class="fa fa-shopping-cart fa-fw"></i> Proveedores</a>
+    </li>
+    <li>
+        <a href="{{ URL::to('planificacion') }}"><i class="fa fa-calendar fa-fw"></i> Planeamiento</a>
+    </li>
+    <li>
+        <a href="{{ URL::to('adquisicion') }}"><i class="fa fa-credit-card fa-fw"></i> Adquisición</a>
+    </li>
+    <li>
+        <a href="{{ URL::to('riesgos') }}"><i class="fa fa-bomb fa-fw"></i> Riesgos</a>
     </li>
 	    
     <!-- /.dropdown -->

@@ -19,6 +19,12 @@
                 @include('layouts.siderbar.request')
             @elseif($dataContainer->siderbar_type=='providers')
                 @include('layouts.siderbar.providers')
+            @elseif($dataContainer->siderbar_type=='planning')
+                @include('layouts.siderbar.planning')
+            @elseif($dataContainer->siderbar_type=='purchase')
+                @include('layouts.siderbar.purchase')
+            @elseif($dataContainer->siderbar_type=='risks')
+                @include('layouts.siderbar.risks')
             @endif
         </nav>
         <div id="page-wrapper">
