@@ -25,6 +25,8 @@
                 @include('layouts.siderbar.purchase')
             @elseif($dataContainer->siderbar_type=='risks')
                 @include('layouts.siderbar.risks')
+            @elseif($dataContainer->siderbar_type=='rrhh')
+                @include('layouts.siderbar.rrhh')
             @endif
         </nav>
         <div id="page-wrapper">
