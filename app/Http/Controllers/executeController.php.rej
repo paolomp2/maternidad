@@ -1,0 +1,9 @@
+diff a/app/Http/Controllers/executeController.php b/app/Http/Controllers/executeController.php	(rejected hunks)
+@@ -785,7 +785,6 @@
+             'method' => "POST",
+         ];
+ 
+-        return view('indicators.execute.1',compact('data'));
+         return view('indicators.execute.6',compact('data'));
+     }
+ 
