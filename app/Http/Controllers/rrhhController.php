@@ -17,6 +17,17 @@ use Maternidad\Http\Controllers\dataContainer;
 class rrhhController extends Controller
 {
 
+
+    private function getValidations($insert)
+    {
+        $validations = array(
+            'search_fecha_ini' => 'required',
+            'search_fecha_fin' => 'required'
+            );
+
+        return $validations;
+    }
+
 	public function r_1()
     {   
     	$dataContainer = new dataContainer;
@@ -134,6 +145,14 @@ class rrhhController extends Controller
     public function r_1_post(Request $request)
     {
 
+        /*Validator section*/
+        $validator = Validator::make($request->all(),$this->getValidations(true));
+        if ($validator->fails()) {
+            return redirect('disponibilidad')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        
         $fechamin = $request->search_fecha_ini;
         $fechamax = $request->search_fecha_fin;
         /*Fecha de inicio y fecha fin*/
@@ -212,8 +231,8 @@ class rrhhController extends Controller
                 })
                 ->where('programacion_guia_gpc.fecha','>=', $date_start_c)
                 ->where('programacion_guia_gpc.fecha','<=', $date_end_c)
-                ->groupby('programacion_guia_gpc.tipo','estado_programacion_reportes.nombre')
-                ->get();
+                ->groupby('programacion_guia_gpc.tipo','estado_programacion_reportes.nombre');
+                
 
         
         
@@ -234,8 +253,7 @@ class rrhhController extends Controller
                })
                ->where('programacion_guia_ts.fecha','>=', $date_start_c)
                 ->where('programacion_guia_ts.fecha','<=', $date_end_c)
-                ->groupby('programacion_guia_ts.id_tipo', 'estado_programacion_reportes.nombre')
-               ->get();
+                ->groupby('programacion_guia_ts.id_tipo', 'estado_programacion_reportes.nombre');
 
 
         //programacion de ETES
@@ -256,9 +274,50 @@ class rrhhController extends Controller
                ->where('programacion_reporte_etes.fecha','>=', $date_start_c)
                 ->where('programacion_reporte_etes.fecha','<=', $date_end_c)
                 ->groupby('programacion_reporte_etes.idtipo_reporte_ETES', 'estado_programacion_reportes.nombre')
+               ->union($guiaP)->union($guiaT)
                ->get();
 
-        echo dd($etes);
+        if($etes!=null){
+
+            $data=array();
+            $i=0;
+            foreach ($etes as $total) {
+                $data[$i][1]=  $total->{'tipo'};
+                $data[$i][2]=  $total->{'guia'};
+                $data[$i][3]=  $total->{'estado'};  
+                $i++;
+            }
+
+            $data_table=$data;
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Elaboración de Guías";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "rrhh";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="post";
+        $dataContainer->url_post="elaboracion_de_guias_rep";
+        $dataContainer->report_name="Elaboración de Guías";
+        $dataContainer->table=true;
+        $dataContainer->serial_number=false;
+        $dataContainer->patrimonial_code=false;
+        $dataContainer->chart_title='Elaboración de Guías';
+        $dataContainer->data_table=$data_table;
+        
+        return view('indicators.rrhh.7',compact('dataContainer'));
+        }
+        else{
+             $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Elaboración de Guías ";//nombre de la p'agin;
+        $dataContainer->siderbar_type ="rrhh";//Tipo de siderbar que se requere desplega;
+        $dataContainer->method="get";
+        $dataContainer->url_post="elaboracion_de_guias_rep";
+        $dataContainer->report_name="No hay información";
+        $dataContainer->serial_number=false;
+        $dataContainer->patrimonial_code=false;
+
+        return view('indicators.request.1',compact('dataContainer'));
+
+        }
+
+
 
     }
 
@@ -312,6 +371,18 @@ class rrhhController extends Controller
              return view('indicators.rrhh.2',compact('dataContainer'));        
     
         }   
+        else{
+                $dataContainer = new dataContainer;
+                $dataContainer->page_name = "Investigación";//nombre de la p'agin;
+                $dataContainer->siderbar_type ="rrhh";//Tipo de siderbar que se requere desplega;
+                $dataContainer->method="get";
+                $dataContainer->url_post="investigacion_rep";
+                $dataContainer->report_name="No hay Información";
+                $dataContainer->serial_number=false;
+                $dataContainer->patrimonial_code=false;
+
+                return view('indicators.request.1',compact('dataContainer'));
+        }
     }
 
 
@@ -371,6 +442,18 @@ class rrhhController extends Controller
              return view('indicators.rrhh.3',compact('dataContainer'));        
     
         }   
+        else{
+            $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Proyectos";//nombre de la p'agin;
+            $dataContainer->siderbar_type ="rrhh";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="get";
+            $dataContainer->url_post="proyectos_rep";
+            $dataContainer->report_name="No hay Información";
+            $dataContainer->serial_number=false;
+            $dataContainer->patrimonial_code=false;
+
+            return view('indicators.request.1',compact('dataContainer'));
+        }
     }
 
 
@@ -428,6 +511,18 @@ class rrhhController extends Controller
              return view('indicators.rrhh.4',compact('dataContainer'));        
     
         }   
+        else{
+                        $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Transferencia de TTSS";//nombre de la p'agin;
+            $dataContainer->siderbar_type ="rrhh";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="get";
+            $dataContainer->url_post="transferencia_de_ttss_rep";
+            $dataContainer->report_name="No hay información";
+            $dataContainer->serial_number=false;
+            $dataContainer->patrimonial_code=false;
+
+            return view('indicators.request.1',compact('dataContainer'));
+        }
 
 
 
@@ -497,17 +592,149 @@ class rrhhController extends Controller
              return view('indicators.rrhh.5',compact('dataContainer'));        
     
         }   
+        else{
+                    $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Lista de Capacitación";//nombre de la p'agin;
+            $dataContainer->siderbar_type ="rrhh";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="get";
+            $dataContainer->url_post="lista_de_capacitacion_rep";
+            $dataContainer->report_name="No hay Información";
+            $dataContainer->serial_number=false;
+            $dataContainer->patrimonial_code=false;
+
+            return view('indicators.request.1',compact('dataContainer'));
+        }
     }
 
     //reporte 7
     public function r_7_post(Request $request)
     {
+        $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();   
+
+        
+        //preventivos asumimos como internados por prevencion
+        $indicador= DB::table('ot_preventivos')
+                    ->select(array(DB::raw('ABS(TIMESTAMPDIFF(HOUR,ot_preventivos.fecha_inicio_ejecucion,ot_preventivos.fecha_termino_ejecucion)) as tiempo'),
+                        'servicios.nombre as servicio',
+                        'ot_preventivos.numero_ficha as numInternado',
+                        'estados.nombre as estado'))
+                    ->leftJoin('servicios',function($join){
+                        $join->on('servicios.idservicio','=','ot_preventivos.idservicio');
+                    })
+                    ->leftJoin('estados',function($join){
+                        $join->on('estados.idestado', '=','ot_preventivos.idestado_final');
+                    })
+                    ->where('ot_preventivos.fecha_inicio_ejecucion','>=', $date_start_c)
+                    ->where('ot_preventivos.fecha_inicio_ejecucion','<=', $date_end_c)
+                    ->get();
+
+        if($indicador!=null){
+            $data=array();
+            $i=0;
+            foreach ($indicador as $ind) {
+                $data[$i][1]=$ind->{'numInternado'};
+                $data[$i][2]=$ind->{'tiempo'};
+                $data[$i][3]=$ind->{'servicio'};
+                $data[$i][4]=$ind->{'estado'};
+                $i++;
+            }
+
+            $data_table=$data;
+            $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Indicadores de Gestión";//nombre de la p'agin;
+            $dataContainer->siderbar_type = "rrhh";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="post";
+            $dataContainer->url_post="indicadores_de_gestion_rep";
+            $dataContainer->report_name="Indicadores de Gestión";
+            $dataContainer->table=true;
+            $dataContainer->serial_number=false;
+            $dataContainer->patrimonial_code=false;
+            $dataContainer->chart_title='Indicadores de Gestión';
+            $dataContainer->data_table=$data_table;
+        
+             return view('indicators.rrhh.8',compact('dataContainer'));        
+
+        }
+        else{
+            $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Indicadores de Gestión";//nombre de la p'agin;
+            $dataContainer->siderbar_type ="rrhh";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="get";
+            $dataContainer->url_post="indicadores_de_gestion_rep";
+            $dataContainer->report_name="No hay Información";
+            $dataContainer->serial_number=false;
+            $dataContainer->patrimonial_code=false;
+
+            return view('indicators.request.1',compact('dataContainer'));
+
+        }
+
+
+
 
     }
 
     //reporte 8
     public function r_8_post(Request $request)
     {
+            $fechamin = $request->search_fecha_ini;
+        $fechamax = $request->search_fecha_fin;
+        /*Fecha de inicio y fecha fin*/
+        $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
+        $date_end_c = Carbon::createFromFormat('m-Y', $fechamax)->endOfMonth();   
+
+        $capacitacion= DB::table('reporte_investigacionxtipo_capacitacion')
+                       ->where('reporte_investigacionxtipo_capacitacion.fecha','>=', $date_start_c)
+                       ->where('reporte_investigacionxtipo_capacitacion.fecha','<=', $date_end_c)
+                       ->get();
+
+        if($capacitacion!=null){
+
+            $data=array();
+            $i=0;
+
+            foreach ($capacitacion as $cap) {
+                $data[$i][1]=$cap->{'idreporte'};
+                $data[$i][2]=$cap->{'sesion'};
+                $data[$i][3]=$cap->{'numParticipantes'};
+                $data[$i][4]=$cap->{'fecha'};
+                $i++;
+            }
+
+
+            $data_table=$data;
+            $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Gestión Logística";//nombre de la p'agin;
+            $dataContainer->siderbar_type = "rrhh";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="post";
+            $dataContainer->url_post="gestion_logistica_rep";
+            $dataContainer->report_name="Gestión Logística";
+            $dataContainer->table=true;
+            $dataContainer->serial_number=false;
+            $dataContainer->patrimonial_code=false;
+            $dataContainer->chart_title='Gestión Logística';
+            $dataContainer->data_table=$data_table;
+        
+             return view('indicators.rrhh.6',compact('dataContainer'));        
+            
+        }
+        else{
+            $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Gestión Logística";//nombre de la p'agin;
+            $dataContainer->siderbar_type ="rrhh";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="get";
+            $dataContainer->url_post="gestion_logistica_rep";
+            $dataContainer->report_name="No hay Información";
+            $dataContainer->serial_number=false;
+            $dataContainer->patrimonial_code=false;
+
+            return view('indicators.request.1',compact('dataContainer'));
+        }  
+
 
     }
 }

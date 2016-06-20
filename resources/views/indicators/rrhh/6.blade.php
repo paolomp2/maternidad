@@ -21,11 +21,13 @@
             <table id="list_table" class="table display">
                 <thead>
                     <tr>
-                        <th>Categoría</th>
+                        <th>Capacitación</th>
 
-                        <th>Número de Proyectos</th>
-                        <th>Presupuesto Total</th>
-                        <th>Estado</th>
+                        <th>Sesion</th>
+                        <th>Número de Participantes</th>
+                        <th>Fecha de Capacitación</th>
+                        
+                        
 
 
 
@@ -36,8 +38,12 @@
                         <tr>
                             <th scope="row"><?php echo $data[1]; ?></th>
                             <td><?php echo $data[2]; ?></td>
-                            <td><?php echo $data[3]." S/."; ?></td>
-                            <td><?php echo $data[4] ; ?></td>
+                            <td><?php echo $data[3]; ?></td>
+                            <td><?php echo $data[4]; ?></td>
+                            
+                           
+                            
+                            
 
                         </tr>
                     <?php } ?>				    				                  

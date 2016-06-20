@@ -21,10 +21,10 @@
             <table id="list_table" class="table display">
                 <thead>
                     <tr>
-                        <th>Categoría</th>
+                        
 
-                        <th>Número de Proyectos</th>
-                        <th>Presupuesto Total</th>
+                        <th>Guías</th>
+                        <th>Tipo</th>
                         <th>Estado</th>
 
 
@@ -36,8 +36,8 @@
                         <tr>
                             <th scope="row"><?php echo $data[1]; ?></th>
                             <td><?php echo $data[2]; ?></td>
-                            <td><?php echo $data[3]." S/."; ?></td>
-                            <td><?php echo $data[4] ; ?></td>
+                            <td><?php echo $data[3]; ?></td>
+                            
 
                         </tr>
                     <?php } ?>				    				                  
@@ -48,7 +48,5 @@
         <div class="col-lg-2">
         </div>
     </div>						
-
-    
 </div>
 @endsection
