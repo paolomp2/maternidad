@@ -101,7 +101,47 @@
 					),null,['class'=>'form-control chosen-select']) !!}
 				</div>
 				@endif
+
+			@if($dataContainer->departament)
+				<div class="form-group col-md-4">
+					{!! Form::label('search_departament','Departamento') !!}
+					{!! Form::select('search_departament', array(
+					'0'=>'Seleccione una opción',
+					'1' => 'Departamento de obstetricia y perinatologia',
+					'2' => 'Departamento de cuidados críticos',
+					'3' => 'Departamento de ginecologia',
+					'4' => 'Departamento de obstetrices',
+					'5' => 'Departamento de neonatología',
+					'6' => 'UIB',
+					'7' => 'Departamento de Especialidades médicas',
+					'8' => 'Departamento de patología',
+					'9' => 'Departamento de anestecia, analfesia y reanimación',
+					'10' => 'Departamento de servicios complementarios',
+					'11' => 'Departamento de enfermeria',
+					'12' => 'Oficina de economía',
+					'13' => 'Oficina de logística',
+					'14' => 'Oficina de recursos humanos',
+					'15' => 'Oficina de servicios generales',
+					'16' => 'Oficina de estadística e informatica',
+					'17' => 'Oficina de comunicaciones',
+					'18' => 'Oficina ejecutiva de apoyo a la investigacion y do...',
+					'19' => 'Oficina ejecutiva de planeamiento estrategico',
+					'20' => 'Oficina de asesoria juridica',
+					'21' => 'Oficina de epidemiologia y salud ambiental',
+					'22' => 'Oficina de gestion de la calidad',
+					'23' => 'Oficina de cooperacion cientifica internacional',
+					'24' => 'Oficina ejecutiva de administracion',
+					'25' => 'Direccion ejecutiva de investigación, docencia y atención en obstreticia y ginecología',
+					'26' => 'Direccion ejecutiva de investigación docencia y atención en neonatología',
+					'27' => 'Dirección ejecutiva de apoyo de especialidades médicas y servicios complementarios',
+					'28' => 'Dirección general',
+					'29' => 'Organo de control institucional'
+					),null,['class'=>'form-control chosen-select']) !!}
+				</div>
+				@endif
 			</div>
+
+
 			
 
 			@if($dataContainer->date)
