@@ -39,6 +39,9 @@
     <li>
         <a href="{{ URL::to('riesgos') }}"><i class="fa fa-bomb fa-fw"></i> Riesgos</a>
     </li>
+    <li>
+        <a href="{{ URL::to('rrhh') }}"><i class="fa fa-male fa-fw"></i> RRHH</a>
+    </li>
 	    
     <!-- /.dropdown -->
     <li class="dropdown">

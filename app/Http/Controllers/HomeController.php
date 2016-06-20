@@ -93,6 +93,15 @@ class HomeController extends Controller
         return view('home',compact('dataContainer'));
     }
 
+    public function rrhh ()
+    {
+        $dataContainer = new dataContainer;
+        $dataContainer->page_name = "Dashboard";//nombre de la p'agin;
+        $dataContainer->siderbar_type = "rrhh";
+
+        return view('home',compact('dataContainer'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -38,6 +38,7 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::get('planificacion', 'HomeController@planning');
 	Route::get('adquisicion', 'HomeController@purchase');
 	Route::get('riesgos', 'HomeController@risks');
+	Route::get('rrhh','HomeController@rrhh');
 
 	//execution routes
 	//TIME INDICATORS
@@ -123,14 +124,12 @@ Route::group(['middleware' => 'otTimes'], function () {
 	Route::get('tiempo_promedio_de_compra','requestController@r_3');
 	Route::post('tiempo_promedio_de_compra_rep','requestController@r_3_post');
 
-	Route::get('diferencia_porcentual_entre_estimaciones_de_consumo_y_consumo_real','requestController@r_4');
-	Route::post('diferencia_porcentual_entre_estimaciones_de_consumo_y_consumo_real_rep','requestController@r_4_post');
+	Route::get('consumo_real','requestController@r_4');
+	Route::post('consumo_real_rep','requestController@r_4_post');
 
 	Route::get('porcentaje_de_servicios_que_experimentaron_desabastecimiento','requestController@r_5');
 	Route::post('porcentaje_de_servicios_que_experimentaron_desabastecimiento_rep','requestController@r_5_post');
 
-	Route::get('porcentaje_de_error_absoluto_medido_entre_consumo_estimado_y_consumo_real','requestController@r_6');
-	Route::post('porcentaje_de_error_absoluto_medido_entre_consumo_estimado_y_consumo_real_rep','requestController@r_6_post');
 
 //assets routes
 	
@@ -215,5 +214,33 @@ Route::group(['middleware' => 'otTimes'], function () {
 	//6
 	Route::get('calibracion', 'riesgosController@r_6');
 	Route::post('calibracion_rep', 'riesgosController@r_6_post');
+
+	//rrhh routes
+	//1
+	Route::get('disenho_de_procesos', 'rrhhController@r_1');
+	Route::post('disenho_de_procesos_rep', 'rrhhController@r_1_post');
+	//2
+	Route::get('elaboracion_de_guias', 'rrhhController@r_2');
+	Route::post('elaboracion_de_guias_rep', 'rrhhController@r_2_post');
+	//3
+	Route::get('investigacion', 'rrhhController@r_3');
+	Route::post('investigacion_rep', 'rrhhController@r_3_post');
+	//4
+	Route::get('proyectos', 'rrhhController@r_4');
+	Route::post('proyectos_rep', 'rrhhController@r_4_post');
+	//5
+	Route::get('transferencia_de_ttss', 'rrhhController@r_5');
+	Route::post('transferencia_de_ttss_rep', 'rrhhController@r_5_post');
+	//6
+	Route::get('lista_de_capacitacion', 'rrhhController@r_6');
+	Route::post('lista_de_capacitacion_rep', 'rrhhController@r_6_post');
+	//7
+	Route::get('indicadores_de_gestion', 'rrhhController@r_7');
+	Route::post('indicadores_de_gestion_rep', 'rrhhController@r_7_post');
+	//8
+	Route::get('gestion_logistica', 'rrhhController@r_8');
+	Route::post('gestion_logistica_rep', 'rrhhController@r_8_post');
+
+
 });
 
