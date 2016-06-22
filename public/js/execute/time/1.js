@@ -14,9 +14,7 @@ $(document).ready(function () {
   var labels = [];
   var datasets = [];
   var months = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
-  var colors = [
-                [224,224,224],
-                [255,204,153],
+  var colors = [                
                 [153,255,153],
                 [153,204,255],   
                 [255,153,255],
@@ -31,7 +29,9 @@ $(document).ready(function () {
                 [255,204,153],
                 [153,255,153],
                 [153,204,255],                
-                [255,153,204]
+                [255,153,204],
+                [224,224,224],
+                [255,204,153]
               ]
   var ind_month =month_beg;
   for (var i = 0; i < num_months; i++) {

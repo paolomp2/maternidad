@@ -8,7 +8,7 @@
 	    </div>
 	@endif
 
-{!! Form::open(['url'=>$dataContainer->url_post,'role'=>'form', 'id'=>'search-form','class' => 'form-group']) !!}
+{!! Form::open(['data-parsley-validate','url'=>$dataContainer->url_post,'role'=>'form', 'id'=>'search-form','class' => 'form-group']) !!}
 	{!!Form::token()!!}
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -45,60 +45,24 @@
 				@if($dataContainer->group)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_grupo','Grupo') !!}
-					{!! Form::select('search_grupo', array(
-					'0'=>'Seleccione una opción',
-					'1' => 'GRUPO 1: EQUIPOS BIOMEDICOS DE CIRUGIA', 
-					'2' => 'GRUPO 2: EQUIPOS BIOMEDICOS DE NEONATOLOGIA', 
-					'3' => 'GRUPO 3: EQUIPOS BIOMEDICOS DE APOYO AL DIAGNOSTICO E IMAGENOLOGIA',
-					'4' => 'GRUPO 4: EQUIPOS BIOMEDICOS DE LABORATORIO'),null,['class'=>'form-control chosen-select']) !!}
+					<select id="search_grupo" name="search_grupo" class="form-control chosen-select">
+                      <option id="0" value="0">Seleccione una opción</option>
+                      @foreach($dataContainer->groups as $group)
+                      <option id="{!!$group->id!!}" value="{!!$group->id!!}">{!!$group->nombre!!}</option>
+                      @endforeach
+                    </select>					
 				</div>
 				@endif
 
 				@if($dataContainer->service)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_servicio','Servicio') !!}
-					{!! Form::select('search_servicio', array(
-					'0'=>'Seleccione una opción',
-					'1' => 'ANATOMIA PATOLOGICA', 
-					'2' => 'ATENCION INMEDIATA Y EMERGENCIA', 
-					'3' => 'BANCO DE LECHE',
-					'4' => 'BANCO DE SANGRE',
-					'5' => 'CENTRO OBSTETRICO',
-					'6' => 'CENTRO QUIRURGICO',
-					'7' => 'CLINICA',
-					'8' => 'CONSULTA EXTERNA DE GINECO OBSTETRICIA',
-					'9' => 'CONSULTORIO EXTERNO',
-					'10' => 'CUIDADOS INTENSIVOS NEONATAL',
-					'11' => 'DIAGNOSTICO POR IMÁGENES',
-					'12' => 'EMERGENCIA',
-					'13' => 'ESPECIALIDADES MEDICAS',
-					'14' => 'FARMACIA',
-					'15' => 'GENETICA',
-					'16' => 'GINECOLOGIA ONCOLOGICA',
-					'17' => 'GINECOLOGIA PATOLOGICA',
-					'18' => 'INTERMEDIOS A',
-					'19' => 'INTERMEDIOS B',
-					'20' => 'MADRES DELICADAS',
-					'21' => 'MANTENIMIENTO',
-					'22' => 'OBSTETRICIA A',
-					'23' => 'OBSTETRICIA B',
-					'24' => 'OBSTETRICIA C',
-					'25' => 'OBSTETRICIA D',
-					'26' => 'OBSTETRICIA E',
-					'27' => 'ODONTOESTOMATOLOGIA',
-					'28' => 'PATOLOGIA CLINICA',
-					'29' => 'RECUPERACION POST ANESTESICA',
-					'30' => 'UCI MATERNO',
-					'31' => 'UNIDAD MEDICINA FETAL',
-					'32' => 'PSICOLOGIA',
-					'33' => 'CENTRAL DE ESTERILIZACION',
-					'34' => 'PUERICULTURA NEONATAL',
-					'35' => 'MEDICINA REPRODUCTIVA',
-					'36' => 'NUTRICION',
-					'37' => 'GINECOLOGIA ESPECIALIZADA',
-					'38' => 'REHABILITACION',
-					'39' => 'CIRUGIA NEONATAL'
-					),null,['class'=>'form-control chosen-select']) !!}
+					<select id="search_grupo" name="search_grupo" class="form-control chosen-select">
+                      <option id="0" value="0">Seleccione una opción</option>
+                      @foreach($dataContainer->services as $service)
+                      <option id="{!!$service->id!!}" value="{!!$service->id!!}">{!!$service->nombre!!}</option>
+                      @endforeach
+                    </select>	
 				</div>
 				@endif
 
@@ -149,7 +113,7 @@
 				<div class="form-group col-md-4">
 					{!! Form::label('search_fecha_ini','Fecha inicio *') !!}
 					<div id="datetimepicker_search_anho1" class="form-group input-group date">
-						{!! Form::text('search_fecha_ini',null,['class'=>'form-control','readonly'=>'']) !!}
+						{!! Form::text('search_fecha_ini',null,['required'=>'required','class'=>'form-control','readonly'=>'']) !!}
 						<span class="input-group-addon">
 		                    <span class="glyphicon glyphicon-calendar"></span>
 		                </span>
@@ -158,7 +122,7 @@
 				<div class="form-group col-md-4">
 					{!! Form::label('search_fecha_fin','Fecha fin *') !!}
 					<div id="datetimepicker_search_anho2" class="input-group date">
-						{!! Form::text('search_fecha_fin',null,['class'=>'form-control','readonly'=>'']) !!}
+						{!! Form::text('search_fecha_fin',null,['required'=>'required','class'=>'form-control','readonly'=>'']) !!}
 						<span class="input-group-addon">
 	                        <span class="glyphicon glyphicon-calendar"></span>
 	                    </span>

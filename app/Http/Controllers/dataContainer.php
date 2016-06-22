@@ -1,12 +1,16 @@
 <?php
 
 namespace Maternidad\Http\Controllers;
+use Maternidad\Servicio;
+use Maternidad\Grupo;
 
 /**
 * 
 */
 class dataContainer
 {
+
+
     private $page_name="change name of this page, visit dataContainer";//nombre de la pagina
     private $siderbar_type = "";//Tipo de siderbar que se requere desplegar
     private $method = "method not defined, visit dataContainer";//Metodo que se esta ejecutando
@@ -24,11 +28,16 @@ class dataContainer
     private $serial_number = false;
     private $model = false;
     private $group = false;
+    private $groups = null;
     private $service = false;
+    private $services = null;
     private $date = true;
-    private $departament = true;
+    private $departament = false;
 
     private $table = true;
+
+    //Chart Name
+    private $chart_name = "Gráfico de reporte";
 
 	public function __get($property) {
 	    if (property_exists($this, $property)) {
@@ -43,6 +52,11 @@ class dataContainer
 
 		return $this;
 	}
+
+    public function __construct(){
+        $this->groups = Grupo::all();
+        $this->services = Servicio::all();
+    }
 }
 	
 ?>

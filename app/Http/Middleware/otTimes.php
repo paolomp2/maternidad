@@ -20,6 +20,34 @@ class otTimes
     public function handle($request, Closure $next)
     {
 
+        /*if (true) {
+            for ($i=1; $i < 1000; $i++) { 
+                $activo = new Activo;
+                $activo->codigo_patrimonial = 10000+ $i;
+                $activo->numero_serie = 10000+ $i;
+                $activo->anho_adquisicion = "2010-01-01";
+                $activo->costo = rand(1000,2000);
+                $activo->codigo_compra = "Cod_comp_".$i;
+                $activo->idgrupo = rand(1,10);
+                $activo->idservicio = rand(1,10);
+                $activo->idproveedor = rand(1,10);
+                $activo->idreporte_instalacion = rand(1,10);
+                $activo->idubicacion_fisica = rand(1,10);
+                $activo->idmodelo_equipo = rand(1,10);
+                $activo->idestado=1;
+                $activo->save();
+            }
+        }*/
+
+        /*if (true) {
+            for ($i=1; $i < 1000; $i++) { 
+                $OtCorrectivo = new OtCorrectivo;
+
+            }
+        }
+*/
+
+
         if(!isset($request->search_fecha_ini)||!isset($request->search_fecha_fin)){
             return $next($request);
         }

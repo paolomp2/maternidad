@@ -66,5 +66,8 @@
 
 @if($dataContainer->table==true)
   {!!Html::script('js/data_tables/jquery.dataTables.js')!!}
-  {!!Html::script('js/data_tables/script_table.js')!!}  
+  {!!Html::script('js/data_tables/script_table.js')!!}
+  {!!Html::style('css/jquery.dataTables.min.css')!!}
 @endif
+
+{!!Html::script('js/parsley/parsley.min.js')!!}

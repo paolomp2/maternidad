@@ -41,8 +41,8 @@ class executeController extends Controller
         $dataContainer->url_post="disponibilidad_total_rep";
         $dataContainer->report_name="Indicador de Disponibilidad Total";
         $dataContainer->service=true;
-        $dataContainer->group=false;
-        $dataContainer->departament=true;
+        
+        //$dataContainer->departament=true;
 
         return view('indicators.execute.2',compact('dataContainer'));
     }
@@ -59,7 +59,7 @@ class executeController extends Controller
         $dataContainer->patrimonial_code=true;
         $dataContainer->service=false;
         $dataContainer->group=false;
-        $dataContainer->departament=true;
+        //$dataContainer->departament=true;
         
 
         return view('indicators.execute.1',compact('dataContainer'));
@@ -77,7 +77,7 @@ class executeController extends Controller
         $dataContainer->patrimonial_code=true;
         $dataContainer->service=false;
         $dataContainer->group=false;
-        $dataContainer->departament=true;
+        //$dataContainer->departament=true;
 
         return view('indicators.execute.1',compact('dataContainer'));
     }
@@ -738,6 +738,7 @@ class executeController extends Controller
         $dataContainer->chart_model='execute.time.1';
         $dataContainer->chart_title='Disponibilidad Total';
         $dataContainer->data_chart=$data_chart;
+        $dataContainer->service=true;
 
         return view('indicators.execute.10',compact('dataContainer'));        
     }
