@@ -30,6 +30,7 @@ class executeController extends Controller
         $dataContainer->patrimonial_code=true;
         
         return view('indicators.execute.1',compact('dataContainer'));
+
     }
 
     public function e_2()
@@ -41,8 +42,12 @@ class executeController extends Controller
         $dataContainer->url_post="disponibilidad_total_rep";
         $dataContainer->report_name="Indicador de Disponibilidad Total";
         $dataContainer->service=true;
+<<<<<<< HEAD
         
         //$dataContainer->departament=true;
+=======
+        $dataContainer->group=false;
+>>>>>>> origin/master
 
         return view('indicators.execute.2',compact('dataContainer'));
     }
@@ -59,7 +64,11 @@ class executeController extends Controller
         $dataContainer->patrimonial_code=true;
         $dataContainer->service=false;
         $dataContainer->group=false;
+<<<<<<< HEAD
         //$dataContainer->departament=true;
+=======
+        $dataContainer->departament=false;
+>>>>>>> origin/master
         
 
         return view('indicators.execute.1',compact('dataContainer'));
@@ -77,7 +86,11 @@ class executeController extends Controller
         $dataContainer->patrimonial_code=true;
         $dataContainer->service=false;
         $dataContainer->group=false;
+<<<<<<< HEAD
         //$dataContainer->departament=true;
+=======
+        $dataContainer->departament=false;
+>>>>>>> origin/master
 
         return view('indicators.execute.1',compact('dataContainer'));
     }
