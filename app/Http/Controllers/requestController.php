@@ -758,8 +758,12 @@ class requestController extends Controller
 
         $service= $request->search_servicio;
         $group= $request ->search_grupo;
+
+
       
+
         
+        $ot_correctivos=null;
         //Costo de Ot realizado  y filtrar por servicio o por grupo
         //caso ambos filtro servicio y grupo
 
@@ -825,7 +829,17 @@ class requestController extends Controller
          }
 
          if($ot_correctivos==null){
-            echo "vacio";
+            $dataContainer = new dataContainer;
+            $dataContainer->page_name = "Consumo Real ";//nombre de la p'agin;
+            $dataContainer->siderbar_type ="request";//Tipo de siderbar que se requere desplega;
+            $dataContainer->method="get";
+            $dataContainer->url_post="consumo_real_rep";
+            $dataContainer->report_name="No hay información";
+            $dataContainer->serial_number=false;
+            $dataContainer->group=true;
+            $dataContainer->service=true;
+
+            return view('indicators.request.1',compact('dataContainer'));
 
          }
          else{
