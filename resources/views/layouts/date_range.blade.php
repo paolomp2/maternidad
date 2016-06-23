@@ -57,7 +57,7 @@
 				@if($dataContainer->service)
 				<div class="form-group col-md-4">
 					{!! Form::label('search_servicio','Servicio') !!}
-					<select id="search_grupo" name="search_grupo" class="form-control chosen-select">
+					<select id="search_servicio" name="search_servicio" class="form-control chosen-select">
                       <option id="0" value="0">Seleccione una opción</option>
                       @foreach($dataContainer->services as $service)
                       <option id="{!!$service->idservicio!!}" value="{!!$service->idservicio!!}">{!!$service->nombre!!}</option>
