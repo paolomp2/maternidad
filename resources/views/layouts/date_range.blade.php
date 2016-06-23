@@ -48,7 +48,7 @@
 					<select id="search_grupo" name="search_grupo" class="form-control chosen-select">
                       <option id="0" value="0">Seleccione una opción</option>
                       @foreach($dataContainer->groups as $group)
-                      <option id="{!!$group->id!!}" value="{!!$group->id!!}">{!!$group->nombre!!}</option>
+                      <option id="{!!$group->idgrupo!!}" value="{!!$group->idgrupo!!}">{!!$group->nombre!!}</option>
                       @endforeach
                     </select>					
 				</div>
@@ -60,7 +60,7 @@
 					<select id="search_grupo" name="search_grupo" class="form-control chosen-select">
                       <option id="0" value="0">Seleccione una opción</option>
                       @foreach($dataContainer->services as $service)
-                      <option id="{!!$service->id!!}" value="{!!$service->id!!}">{!!$service->nombre!!}</option>
+                      <option id="{!!$service->idservicio!!}" value="{!!$service->idservicio!!}">{!!$service->nombre!!}</option>
                       @endforeach
                     </select>	
 				</div>
