@@ -62,6 +62,9 @@
 	@if($dataContainer->chart_model=='execute.time.1')
 	<script src="{{asset('js/execute/time/1.js') }}"></script>
 	@endif
+	@if($dataContainer->chart_model2=='execute.time.2')
+	<script src="{{asset('js/execute/time/2.js') }}"></script>
+	@endif
 @endif
 
 @if($dataContainer->table==true)

@@ -18,6 +18,7 @@ class dataContainer
     private $report_name = "report_name not define, visit dataContainer";
     private $chart = false;
     private $chart_model = "execute.time.1";
+    private $chart_model2= "execute.time.2";
     private $chart_title = "Disponibilidad";
     private $data_chart = null;
     private $data_table = array(); //datos de una tabla

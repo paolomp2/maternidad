@@ -3,7 +3,7 @@ $(document).ready(function () {
   var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
 
   var elements_name = jQuery.parseJSON($("#labels").val());
-  var num_months = $("#num_months").val();
+  var num_months = 4;
   var data = jQuery.parseJSON($("#data").val());
   var year_beg = $("#year_beg").val();
   var year_end = $("#year_end").val();
@@ -13,7 +13,7 @@ $(document).ready(function () {
 
   var labels = [];
   var datasets = [];
-  var months = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+  var months = ["Grupo 1","Grupo 2","Grupo 3","Grupo 4"];
   var colors = [                
                 [153,255,153],
                 [153,204,255],   
@@ -33,14 +33,10 @@ $(document).ready(function () {
                 [224,224,224],
                 [255,204,153]
               ]
-              
   var ind_month =month_beg;
   for (var i = 0; i < num_months; i++) {
-    labels[i]=months[ind_month]+"-"+year_beg;
+    labels[i]=months[ind_month];
     ind_month++;
-    if(ind_month==12){
-      year_beg++;
-    }
       
   };
 

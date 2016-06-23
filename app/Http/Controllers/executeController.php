@@ -564,7 +564,7 @@ class executeController extends Controller
         $fechamin = $request->search_fecha_ini;
         $fechamax = $request->search_fecha_fin;
         $servicio = $request->search_servicio; //idservicio
-        echo $servicio;
+        
         
         //TRASNFORMACION DE LAS FECHAS
         $date_start_c = Carbon::createFromFormat('m-Y', $fechamin)->startOfMonth();
@@ -733,7 +733,7 @@ class executeController extends Controller
         $dataContainer->serial_number=false;
         $dataContainer->patrimonial_code=false;
         $dataContainer->chart=true;
-        $dataContainer->chart_model='execute.time.1';
+        $dataContainer->chart_model2='execute.time.2';
         $dataContainer->chart_title='Disponibilidad Total';
         $dataContainer->data_chart=$data_chart;
         $dataContainer->service=true;

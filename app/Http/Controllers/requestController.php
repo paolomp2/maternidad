@@ -762,7 +762,8 @@ class requestController extends Controller
 
       
 
-        
+        echo $service ;
+        echo $group;      
         $ot_correctivos=null;
         //Costo de Ot realizado  y filtrar por servicio o por grupo
         //caso ambos filtro servicio y grupo
